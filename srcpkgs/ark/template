@@ -1,24 +1,22 @@
 # Template file for 'ark'
 pkgname=ark
-version=20.12.3
+version=21.08.2
 revision=1
 build_style=cmake
 configure_args="-DDESKTOPTOJSON_EXECUTABLE=/usr/bin/desktoptojson"
 hostmakedepends="extra-cmake-modules qt5-devel qt5-qmake
  kdoctools kconfig gettext pkg-config python3 kcoreaddons kparts"
 makedepends="libarchive-devel kpty-devel kparts-devel kitemmodels-devel libzip-devel"
-checkdepends="xvfb-run p7zip p7zip-unrar lzop lrzip unrar unzip zip zstd"
+checkdepends="p7zip p7zip-unrar lzop lrzip unrar unzip zip zstd"
 short_desc="KDE Archiving Tool"
 maintainer="John <me@johnnynator.dev>"
 license="GPL-2.0-or-later"
 homepage="https://kde.org/applications/en/utilities/org.kde.ark"
 distfiles="${KDE_SITE}/release-service/${version}/src/${pkgname}-${version}.tar.xz"
-checksum=e4f2dfe595f7b51879c8db3734ad56a2363a934013ee4bd4bc8c94a210405b3b
+checksum=2f941c247cd30517a7aa765ed547d98a92d588c4445a7376f99e1f903168bf43
 
 do_check() {
-	:
-	# XXX: Doesn't find test archives (?)
-	#cd build
-	#CTEST_OUTPUT_ON_FAILURE=TRUE QT_QPA_PLATFORM=offscreen \
-	#	ctest -E 'plugins-cliunarchivertest'
+	cd build
+	# requires rar compressor
+	ctest -E plugins-clirartest
 }

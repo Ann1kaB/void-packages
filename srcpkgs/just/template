@@ -1,6 +1,6 @@
 # Template file for 'just'
 pkgname=just
-version=0.9.0
+version=0.10.2
 revision=1
 build_style=cargo
 short_desc="Just a command runner"
@@ -8,8 +8,9 @@ maintainer="Wilson Birney <wpb@360scada.com>"
 license="CC0-1.0"
 homepage="https://github.com/casey/just"
 changelog="https://raw.githubusercontent.com/casey/just/master/CHANGELOG.md"
-distfiles="https://github.com/casey/just/archive/v${version}.tar.gz"
-checksum=877fdd517722ec1a554b046e1a9fd112f3503d91211702895c5ba12b29dcbcc6
+distfiles="https://github.com/casey/just/archive/refs/tags/${version}.tar.gz"
+checksum=7be0c7f895191407c70affedc8640fcbc64b50cf72d4d301a1f2391e12478f14
+make_check=ci-skip  # test fails when run as root
 
 # Fix failing test
 pre_check() {

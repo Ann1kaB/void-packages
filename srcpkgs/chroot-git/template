@@ -1,39 +1,71 @@
 # Template file for 'chroot-git'
 pkgname=chroot-git
-version=2.31.1
+version=2.33.1
 revision=1
 bootstrap=yes
 wrksrc="git-${version}"
-build_style=gnu-configure
-configure_args="--without-curl --without-openssl
- --without-python --without-expat --without-tcltk
- ac_cv_lib_curl_curl_global_init=no ac_cv_lib_expat_XML_ParserCreate=no"
-make_check_target=test
 makedepends="zlib-devel"
 short_desc="GIT Tree History Storage Tool -- for xbps-src use"
 maintainer="Enno Boland <gottox@voidlinux.org>"
 license="GPL-2.0-only"
 homepage="https://git-scm.com/"
 distfiles="https://www.kernel.org/pub/software/scm/git/git-${version}.tar.xz"
-checksum=9f61417a44d5b954a5012b6f34e526a3336dcf5dd720e2bb7ada92ad8b3d6680
+checksum=e054a6e6c2b088bd1bff5f61ed9ba5aa91c9a3cd509539a4b41c5ddf02201f2f
 
 if [ "$CHROOT_READY" ]; then
-	hostmakedepends="perl tar"
-else
-	configure_args+=" --with-zlib=${XBPS_MASTERDIR}/usr"
+	checkdepends="perl gnupg"
 fi
 
-post_configure() {
+do_configure() {
 	cat <<-EOF >config.mak
+	prefix = /usr
+	CC = $CC
+	AR = $AR
+	TAR = $(command -v bsdtar || command -v tar)
+	CFLAGS = $CFLAGS
+	LDFLAGS = $LDFLAGS
 	CC_LD_DYNPATH=-L
-	NO_INSTALL_HARDLINKS=Yes
+	SKIP_DASHED_BUILT_INS = Yes
 	NO_GETTEXT=Yes
+	NO_OPENSSL = Yes
+	USE_LIBPCRE :=
+	USE_LIBPCRE2 :=
+	NO_CURL = Yes
+	NO_EXPAT = Yes
+	NO_PERL = Yes
+	NO_PYTHON = Yes
+	NO_TCLTK = Yes
+	DEFAULT_TEST_TARGET = prove
+	GIT_PROVE_OPTS = $makejobs
+	# firstword (uname -m)
+	HOST_CPU = ${XBPS_TARGET_MACHINE%-musl}
+	SKIP_DASHED_BUILT_INS = Yes
+	gitexecdir = libexec/chroot-git
 	EOF
+
+	if [ "$XBPS_TARGET_LIBC" = musl ]; then
+		cat <<-EOF >>config.mak
+		ICONV_OMITS_BOM = Yes
+		NO_REGEX = Yes
+		EOF
+	fi
+	if ! [ "$CHROOT_READY" ]; then
+		echo "ZLIB_PATH = ${XBPS_MASTERDIR}/usr" >>config.mak
+	fi
+}
+
+do_build() {
+	make ${makejobs} git
+}
+
+do_check() {
+	make test
 }
 
 do_install() {
-	# remove unneeded stuff.
-	make DESTDIR=${wrksrc}/build-tmp install
-
-	vbin ${wrksrc}/build-tmp/usr/bin/git chroot-git
+	vbin git chroot-git
+	vmkdir usr/libexec/chroot-git
+	ln -s ../../bin/chroot-git $DESTDIR/usr/libexec/chroot-git/git
+	ln -s git $DESTDIR/usr/libexec/chroot-git/git-upload-pack
+	ln -s git $DESTDIR/usr/libexec/chroot-git/git-receive-pack
 }

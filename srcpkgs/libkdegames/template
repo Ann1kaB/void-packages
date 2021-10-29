@@ -1,17 +1,17 @@
 # Template file for 'libkdegames'
 pkgname=libkdegames
-version=20.12.2
+version=21.08.2
 revision=1
 build_style=cmake
 hostmakedepends="extra-cmake-modules pkg-config qt5-qmake qt5-host-tools
  kcoreaddons kdoctools gettext"
 makedepends="qt5-svg-devel knewstuff-devel kdnssd-devel kdeclarative-devel libopenal-devel libsndfile-devel"
 short_desc="Common code and data for many KDE games"
-maintainer="1is7ac3 <isaac.qa13@gmail.com>"
+maintainer="Piotr Wójcik <chocimier@tlen.pl>"
 license="GPL-2.0-or-later"
 homepage="https://kde.org/applications/games"
 distfiles="${KDE_SITE}/release-service/${version}/src/libkdegames-${version}.tar.xz"
-checksum=19d93fe25f1ea5173d5130b2d270038b26e6cc6f09238724f330d05fbe019439
+checksum=077203df97c7b41b1f87d790a8107066d59b1fa65ae176320230b1120a246b49
 
 libkdegames-devel_package() {
 	depends="${sourcepkg}>=${version}_${revision} ${makedepends}"

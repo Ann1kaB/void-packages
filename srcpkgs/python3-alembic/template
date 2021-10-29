@@ -1,7 +1,7 @@
 # Template file for 'python3-alembic'
 pkgname=python3-alembic
-version=1.5.8
-revision=1
+version=1.7.1
+revision=2
 wrksrc="alembic-${version}"
 build_style=python3-module
 hostmakedepends="python3-setuptools"
@@ -10,12 +10,10 @@ short_desc="Database migration tool for SQLAlchemy"
 maintainer="Piotr Wójcik <chocimier@tlen.pl>"
 license="MIT"
 homepage="https://github.com/sqlalchemy/alembic"
+changelog="https://raw.githubusercontent.com/sqlalchemy/alembic/master/docs/build/changelog.rst"
 distfiles="${PYPI_SITE}/a/alembic/alembic-${version}.tar.gz"
-checksum=e27fd67732c97a1c370c33169ef4578cf96436fa0e7dcfaeeef4a917d0737d56
-
-do_check() {
-	: tests require deprecated pytest behavior that throws errors
-}
+checksum=aea964d3dcc9c205b8759e4e9c1c3935ea3afeee259bffd7ed8414f8085140fb
+make_check=no # tests require deprecated pytest behavior that throws errors
 
 post_install() {
 	vlicense LICENSE

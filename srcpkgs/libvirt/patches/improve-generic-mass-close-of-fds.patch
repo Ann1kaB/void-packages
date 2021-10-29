@@ -1,3 +1,5 @@
+XXX: DO NOT REMOVE UNLESS VERIFIED THAT libvirt virCommandMassClose does not use malloc
+
 https://www.redhat.com/archives/libvir-list/2020-August/msg00598.html
 
 Add a portable generic implementation of virMassClose as fallback on
@@ -10,13 +12,14 @@ This solves a deadlock with musl libc.
 
 Signed-off-by: Natanael Copa <ncopa alpinelinux org>
 ---
- src/util/vircommand.c | 76 +++++++++++++++++++++++++++++++++----------
- 1 file changed, 58 insertions(+), 18 deletions(-)
+ src/util/vircommand.c | 66 +++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 58 insertions(+), 8 deletions(-)
 
-diff -ur src/util/vircommand.c src/util/vircommand.c
---- src/util/vircommand.c
-+++ src/util/vircommand.c
-@@ -443,7 +443,7 @@
+diff --git a/src/util/vircommand.c b/src/util/vircommand.c
+index 8e372c3152..5319b9c9b3 100644
+--- a/src/util/vircommand.c
++++ b/src/util/vircommand.c
+@@ -455,7 +455,7 @@ virExecCommon(virCommand *cmd, gid_t *groups, int ngroups)
      return 0;
  }
  
@@ -25,26 +28,16 @@ diff -ur src/util/vircommand.c src/util/vircommand.c
  /* On Linux, we can utilize procfs and read the table of opened
   * FDs and selectively close only those FDs we don't want to pass
   * onto child process (well, the one we will exec soon since this
-@@ -478,17 +478,7 @@
- 
+@@ -500,7 +500,7 @@ virCommandMassCloseGetFDsGeneric(virCommand *cmd G_GNUC_UNUSED,
+     virBitmapSetAll(fds);
      return 0;
  }
--
--# else /* !__linux__ */
--
--static int
--virCommandMassCloseGetFDsGeneric(virCommandPtr cmd G_GNUC_UNUSED,
--                                 virBitmapPtr fds)
--{
--    virBitmapSetAll(fds);
--    return 0;
--}
 -# endif /* !__linux__ */
 +# endif /* __linux__ && __GLIBC__ */
  
  # ifdef __FreeBSD__
  
-@@ -542,7 +532,7 @@
+@@ -554,7 +554,7 @@ virCommandMassClose(virCommand *cmd,
      return 0;
  }
  
@@ -52,8 +45,8 @@ diff -ur src/util/vircommand.c src/util/vircommand.c
 +# elif defined(__GLIBC__)  /* ! __FreeBSD__ */
  
  static int
- virCommandMassClose(virCommandPtr cmd,
-@@ -569,13 +559,8 @@
+ virCommandMassClose(virCommand *cmd,
+@@ -581,13 +581,8 @@ virCommandMassClose(virCommand *cmd,
  
      fds = virBitmapNew(openmax);
  
@@ -67,13 +60,13 @@ diff -ur src/util/vircommand.c src/util/vircommand.c
  
      fd = virBitmapNextSetBit(fds, 2);
      for (; fd >= 0; fd = virBitmapNextSetBit(fds, fd)) {
-@@ -593,6 +578,61 @@
+@@ -605,6 +600,61 @@ virCommandMassClose(virCommand *cmd,
      return 0;
  }
  
 +#else /* ! __FreeBSD__ && ! __GLIBC__ */
 +static int
-+virCommandMassClose(virCommandPtr cmd,
++virCommandMassClose(virCommand* cmd,
 +                    int childin,
 +                    int childout,
 +                    int childerr)
@@ -129,3 +122,6 @@ diff -ur src/util/vircommand.c src/util/vircommand.c
  # endif /* ! __FreeBSD__ */
  
  /*
+-- 
+2.33.0
+

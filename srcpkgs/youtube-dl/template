@@ -1,7 +1,7 @@
 # Template file for 'youtube-dl'
 pkgname=youtube-dl
-version=2021.04.07
-revision=1
+version=2021.06.06
+revision=2
 wrksrc="${pkgname}"
 build_style=python3-module
 hostmakedepends="python3-setuptools"
@@ -13,7 +13,7 @@ license="Unlicense"
 homepage="https://yt-dl.org"
 changelog="https://raw.githubusercontent.com/ytdl-org/youtube-dl/master/ChangeLog"
 distfiles="${homepage}/downloads/${version}/${pkgname}-${version}.tar.gz"
-checksum=f5080aa885672628d63f4a3e0ff0976437b4ff2caef91321fc23cbf60c0da509
+checksum=3ccb0e4db9fd172338ed1c32bae0be2f716458dca4143e55732ff55260b20ac3
 
 do_check() {
 	PYTHON=/usr/bin/python3 make offlinetest

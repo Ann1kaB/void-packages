@@ -1,6 +1,6 @@
 # Template file for 'mutter'
 pkgname=mutter
-version=40.0
+version=40.4
 revision=1
 build_helper="gir"
 build_style=meson
@@ -14,24 +14,22 @@ makedepends="elogind-devel glib-devel gnome-desktop-devel graphene-devel
  libinput-devel MesaLib-devel pipewire-devel startup-notification-devel
  wayland-protocols gnome-settings-daemon-devel"
 depends="gsettings-desktop-schemas desktop-file-utils zenity"
+checkdepends="xvfb-run"
 short_desc="Lightweight GTK+3 window manager"
 maintainer="Enno Boland <gottox@voidlinux.org>"
 license="GPL-2.0-or-later"
 homepage="https://wiki.gnome.org/Projects/Mutter/"
+changelog="https://gitlab.gnome.org/GNOME/mutter/-/raw/gnome-40/NEWS"
 distfiles="${GNOME_SITE}/${pkgname}/${version%.*}/${pkgname}-${version}.tar.xz"
-checksum=7a71b312e5a667c5374895188a506a3f6b671768bcb362b68efdc562773d198e
+checksum=a71c159cd2ac84a677da5fa7acc49483b2627dad772f880f889eb8e4530a1e23
 shlib_provides="libmutter-clutter-8.so libmutter-cogl-8.so
  libmutter-cogl-pango-8.so"
+make_check=no # needs a full graphical session
 
 # Upstream keeps pulling generated headers even though it can cause race
 # conditions in meson/ninja
 pre_build() {
 	ninja ${makejobs} -C build src/meta-dbus-display-config.h
-}
-
-# needs X
-do_check() {
-	:
 }
 
 post_install() {

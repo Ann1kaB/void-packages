@@ -1,6 +1,6 @@
 # Template file for 'kget'
 pkgname=kget
-version=20.12.3
+version=21.08.2
 revision=1
 build_style=cmake
 configure_args="-DDESKTOPTOJSON_EXECUTABLE=/usr/bin/desktoptojson"
@@ -14,4 +14,4 @@ maintainer="Orphaned <orphan@voidlinux.org>"
 license="GPL-2.0-or-later"
 homepage="https://invent.kde.org/network/kget"
 distfiles="${KDE_SITE}/release-service/${version}/src/${pkgname}-${version}.tar.xz"
-checksum=d4eed8f395262cfd94c2b8c9caea3523d78c68000d471c1d76ad1aecc6f6024e
+checksum=d0c40b968d184f1a45e83dc26ac7e4a2a9761196bc7c3e8cc85d9539ed380086

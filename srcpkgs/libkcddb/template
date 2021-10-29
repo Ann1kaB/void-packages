@@ -1,6 +1,6 @@
 # Template file for 'libkcddb'
 pkgname=libkcddb
-version=20.12.3
+version=21.08.1
 revision=1
 build_style=cmake
 hostmakedepends="extra-cmake-modules gettext kconfig kcoreaddons kdoctools
@@ -11,11 +11,7 @@ maintainer="Piotr Wójcik <chocimier@tlen.pl>"
 license="GPL-2.0-or-later, LGPL-2.0-or-later, BSD-3-Clause, GFDL-1.2-only"
 homepage="https://projects.kde.org/projects/kde/kdemultimedia/libkcddb"
 distfiles="${KDE_SITE}/release-service/${version}/src/libkcddb-${version}.tar.xz"
-checksum=206229847e0fdde6d1cb36c7be87bd81e7723dd4774d06a872279a4b4390ee54
-
-pre_check() {
-	export QT_QPA_PLATFORM=offscreen
-}
+checksum=f8c756a4832ad4f984c0ec69cc4593cb5265bb4430629048dce9b1ae750e0421
 
 libkcddb-devel_package() {
 	depends="libkcddb>=${version}_${revision}"
@@ -26,6 +22,6 @@ libkcddb-devel_package() {
 		vmove usr/include
 		vmove "usr/lib/*.so"
 		vmove usr/lib/qt5/mkspecs
-		vlicense cmake/COPYING-CMAKE-SCRIPTS
+		vlicense LICENSES/BSD-3-Clause.txt
 	}
 }

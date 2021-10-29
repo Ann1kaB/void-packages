@@ -1,6 +1,6 @@
 # Template file for 'openradtool'
 pkgname=openradtool
-version=0.12.6
+version=0.13.9
 revision=1
 build_style=configure
 configure_args="PREFIX=/usr MANDIR=/usr/share/man"
@@ -15,7 +15,7 @@ license="ISC"
 homepage="https://kristaps.bsd.lv/openradtool/"
 changelog="https://kristaps.bsd.lv/openradtool/archive.html"
 distfiles="https://kristaps.bsd.lv/openradtool/snapshots/openradtool-${version}.tar.gz"
-checksum=fec033245ad9371292f92eb87fce77e3e1d6b67ca131dcd181d36dc8df201023
+checksum=9371577b5ffac498422edc964102b77819c9768e225f354d9cd796cf87d9977f
 
 post_install() {
 	sed -n '2,16p' main.c >LICENSE

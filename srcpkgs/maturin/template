@@ -1,11 +1,12 @@
 # Template file for 'maturin'
 pkgname=maturin
-version=0.9.4
-revision=2
+version=0.11.5
+revision=1
 build_style=cargo
+build_helper=qemu
 # Disable the 'rustls' feature, which leads to bad platform compatibility
 # The list of enabled features should be reconciled with each new release
-configure_args="--no-default-features --features auditwheel,log,upload,human-panic"
+configure_args="--no-default-features --features log,upload,human-panic"
 hostmakedepends="python3-setuptools python3-toml"
 makedepends="openssl-devel"
 depends="python3-toml"
@@ -13,16 +14,18 @@ short_desc="Build and publish crates as python packages"
 maintainer="Andrew J. Hesford <ajh@sideband.org>"
 license="Apache-2.0, MIT"
 homepage="https://github.com/PyO3/maturin"
-# bump platforms version if it changes in Cargo.lock
+# bump target-lexicon version if it changes in Cargo.lock
 distfiles="${homepage}/archive/v${version}.tar.gz
- https://github.com/RustSec/platforms-crate/archive/v1.1.0.tar.gz"
-checksum="130d39cc6ecae9b1cb5602d262c1a8a8230c8ddb3496d2397c49e565c0fc731a
- 2524984c2ef547bb54515828e4afad0e781a439d74cf0197cf168ec6c818594c"
+ https://github.com/bytecodealliance/target-lexicon/archive/v0.12.2.tar.gz"
+checksum="33b67e66e725c76eac866c2174cfbe708e77a44d215878474d84bc5f9f6386f3
+ b6c2ddab7498cf6eab8e637a5b7895f3170b2f9ef989861d1ff33af6c8459b27"
+# Tests use unstable features and fail to build
+make_check=no
 
 post_extract() {
-	mv ../platforms-crate* platforms
+	mv ../target-lexicon* target-lexicon
 	echo "[patch.crates-io]" >> Cargo.toml
-	echo "platforms = { path = './platforms' }" >> Cargo.toml
+	echo "target-lexicon = { path = './target-lexicon' }" >> Cargo.toml
 }
 
 post_patch() {
@@ -33,13 +36,19 @@ post_patch() {
 post_build() {
 	# python package is pure; the cross environment is not relevant
 	python3 setup.py build
-}
 
-do_check() {
-	echo "Tests use unstable features and fail to build; skipping"
+	# Generate some completions
+	_matbin="target/${RUST_TARGET}/release/maturin"
+	vtargetrun "${_matbin}" completions zsh > maturin.zsh
+	vtargetrun "${_matbin}" completions fish > maturin.fish
+	vtargetrun "${_matbin}" completions bash > maturin.bash
 }
 
 post_install() {
 	vlicense license-mit LICENSE-MIT
 	python3 setup.py install --prefix=/usr --root=${DESTDIR}
+
+	vcompletion maturin.zsh zsh
+	vcompletion maturin.fish fish
+	vcompletion maturin.bash bash
 }

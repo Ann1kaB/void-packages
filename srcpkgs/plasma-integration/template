@@ -1,6 +1,6 @@
 # Template file for 'plasma-integration'
 pkgname=plasma-integration
-version=5.21.4
+version=5.23.1
 revision=1
 build_style=cmake
 configure_args="-DBUILD_TESTING=OFF"
@@ -14,4 +14,4 @@ maintainer="John <me@johnnynator.dev>"
 license="LGPL-2.0-or-later"
 homepage="https://invent.kde.org/plasma/plasma-integration"
 distfiles="${KDE_SITE}/plasma/${version}/${pkgname}-${version}.tar.xz"
-checksum=1cc280a93fab2c9c461deb172ee22da34a5100c3cd31ad8ebf0a9c405899422e
+checksum=ca2b3487de16646bc5d2120adfd9d58cee69570a0eb64630ea075a93cdddcb71

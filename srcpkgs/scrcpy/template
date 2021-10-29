@@ -1,6 +1,6 @@
 # Template file for 'scrcpy'
 pkgname=scrcpy
-version=1.17
+version=1.19
 revision=1
 build_style=meson
 configure_args="-Dcompile_server=false
@@ -14,8 +14,8 @@ license="Apache-2.0"
 homepage="https://github.com/Genymobile/scrcpy"
 distfiles="${homepage}/archive/v${version}.tar.gz
  ${homepage}/releases/download/v${version}/scrcpy-server-v${version}"
-checksum="c16f1fe1789290d0c7dd3a2778f33d6dc6347ffe3e78e64127b85eda52420d7f
- 11b5ad2d1bc9b9730fb7254a78efd71a8ff46b1938ff468e47a21b653a1b6725"
+checksum="40ac2059618f18a0e6f9cd0e40d3bff240ade98664bd619422f875bff7e8c70e
+ 876f9322182e6aac6a58db1334f4225855ef3a17eaebc80aab6601d9d1ecb867"
 skip_extraction="scrcpy-server-v${version}"
 
 post_install() {

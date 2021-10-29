@@ -57,6 +57,7 @@ packages for XBPS, the `Void Linux` native packaging system.
 		* [gtk3-immodules](#triggers_gtk3_immodules)
 		* [hwdb.d-dir](#triggers_hwdb.d_dir)
 		* [info-files](#triggers_info_files)
+		* [initramfs-regenerate](#triggers_initramfs_regenerate)
 		* [kernel-hooks](#triggers_kernel_hooks)
 		* [mimedb](#triggers_mimedb)
 		* [mkdirs](#triggers_mkdirs)
@@ -176,9 +177,8 @@ can be used to perform other operations before configuring the package.
 - `check` This optional phase checks the result of the `build` phase by running the testsuite provided by the package.
 If the default `do_check` function provided by the build style doesn't do anything, the template should set
 `make_check_target` and/or `make_check_args` appropriately or define its own `do_check` function. If tests take too long
-or can't run in all environments, they should be run only if `XBPS_CHECK_PKGS` is `full`, which means they should either
-be under a `[ "$XBPS_CHECK_PKGS" = full ]` conditional (especially useful with custom `do_check`) or `make_check=extended`
-should be set in the template.
+or can't run in all environments, `make_check` should be set to fitting value or
+`do_check` should be customized to limit testsuite unless `XBPS_CHECK_PKGS` is `full`.
 
 - `install` This phase installs the `package files` into the package destdir `<masterdir>/destdir/<pkgname>-<version>`,
 via `make install` or any other compatible method.
@@ -434,7 +434,7 @@ in this directory such as `${XBPS_BUILDDIR}/${wrksrc}`.
 
 The list of mandatory variables for a template:
 
-- `homepage` A string pointing to the `upstream` homepage.
+- `homepage` An URL pointing to the upstream homepage.
 
 
 - <a id="var_license"></a>
@@ -443,8 +443,8 @@ The list of mandatory variables for a template:
 Multiple licenses should be separated by commas, Example: `GPL-3.0-or-later, custom:Hugware`.
 
   Empty meta-packages that don't include any files
-  which thus have and require no license, should have set
-  `license="BSD-2-Clause"`.
+  and thus have and require no license should use
+  `Public Domain`.
 
   Note: `MIT`, `BSD`, `ISC` and custom licenses
   require the license file to be supplied with the binary package.
@@ -462,9 +462,7 @@ the generated `binary packages` have been modified.
 - `short_desc` A string with a brief description for this package. Max 72 chars.
 
 - `version` A string with the package version. Must not contain dashes or underscore
-and at least one digit is required. Using bash's pattern substitution and prefix and
-suffix matching isn't supported, since this field needs to be parsed by
-`xbps-checkvers(1)`. Using variables in this field should be avoided.
+and at least one digit is required. Shell's variable substition usage is not allowed.
 
 Neither `pkgname` or `version` should contain special characters which make it
 necessary to quote them, so they shouldn't be quoted in the template.
@@ -601,15 +599,19 @@ current directory with respect to the install.
 
 - `patch_args` The arguments to be passed in to the `patch(1)` command when applying
 patches to the package sources during `do_patch()`. Patches are stored in
-`srcpkgs/<pkgname>/patches` and must be in `-p0` format. By default set to `-Np0`.
+`srcpkgs/<pkgname>/patches` and must be in `-p1` format. By default set to `-Np1`.
 
 - `disable_parallel_build` If set the package won't be built in parallel
 and `XBPS_MAKEJOBS` has no effect.
 
-- `make_check` Sets the cases in which the `check` phase is run. Can be `yes` (the default) to run if
-`XBPS_CHECK_PKGS` is set, `extended` to run if `XBPS_CHECK_PKGS` is `full` and `no` to never run.
-This option should usually be accompanied by a comment explaining why it was set, especially when
-set to `no`.
+- `make_check` Sets the cases in which the `check` phase is run.
+This option has to be accompanied by a comment explaining why the tests fail.
+Allowed values:
+  - `yes` (the default) to run if `XBPS_CHECK_PKGS` is set.
+  - `extended` to run if `XBPS_CHECK_PKGS` is `full`.
+  - `ci-skip` to run locally if `XBPS_CHECK_PKGS` is set, but not as part of pull request checks.
+  - `no` to never run.
+
 
 - `keep_libtool_archives` If enabled the `GNU Libtool` archives won't be removed. By default those
 files are always removed automatically.
@@ -740,6 +742,8 @@ used.
 
 - `fetch_cmd` Executable to be used to fetch URLs in `distfiles` during the `do_fetch` phase.
 
+- `changelog` An URL pointing to the upstream changelog. Raw text files are preferred.
+
 - `archs` Whitespace separated list of architectures that a package can be
 built for, available architectures can be found under `common/cross-profiles`.
 In general, `archs` should only be set if the upstream software explicitly targets
@@ -756,6 +760,10 @@ Examples:
 	archs="*"
 	```
 A special value `noarch` used to be available, but has since been removed.
+
+- `nocheckperms` If set, xbps-src will not fail on common permission errors (world writable files, etc.)
+
+- `nofixperms` If set, xbps-src will not fix common permission errors (executable manpages, etc.)
 
 <a id="explain_depends"></a>
 #### About the many types of `depends` variables
@@ -869,7 +877,7 @@ been found or to fix compilation with new software.
 
 To handle this, xbps-src has patching functionality. It will look for all files
 that match the glob `srcpkgs/$pkgname/patches/*.{diff,patch}` and will
-automatically apply all files it finds using `patch(1)` with `-Np0`. This happens
+automatically apply all files it finds using `patch(1)` with `-Np1`. This happens
 during the `do_patch()` phase. The variable `PATCHESDIR` is
 available in the template, pointing to the `patches` directory.
 
@@ -1527,7 +1535,8 @@ This sets some environment variables required to allow cross compilation. Suppor
 building a python module for multiple versions from a single template is also possible.
 The `python3-pep517` build style provides means to build python packages that provide a build-system
 definition compliant with [PEP 517](https://www.python.org/dev/peps/pep-0517/) without a traditional
-`setup.py` script.
+`setup.py` script. The `python3-pep517` build style does not provide a specific build backend, so
+packages will need to add an appropriate backend provider to `hostmakedepends`.
 
 Python packages that rely on `python3-setuptools` should generally map `setup_requires`
 dependencies in `setup.py` to `hostmakedepends` in the template and `install_requires`
@@ -1876,6 +1885,35 @@ registry located at `usr/share/info`.
 If it is running under another architecture it tries to use the host's `install-info`
 utility.
 
+<a id="triggers_initramfs_regenerate"></a>
+### initramfs-regenerate
+
+The initramfs-regenerate trigger will trigger the regeneration of all kernel
+initramfs images after package installation or removal. The trigger must be
+manually requested.
+
+This hook is probably most useful for DKMS packages because it will provide a
+means to include newly compiled kernel modules in initramfs images for all
+currently available kernels. When used in a DKMS package, it is recommended to
+manually include the `dkms` trigger *before* the `initramfs-regenerate` trigger
+using, for example,
+
+    ```
+    triggers="dkms initramfs-regenerate"
+    ```
+
+Although `xbps-src` will automatically include the `dkms` trigger whenever
+`dkms_modules` is installed, the automatic addition will come *after*
+`initramfs-regenerate`, which will cause initramfs images to be recreated
+before the modules are compiled.
+
+By default, the trigger uses `dracut --regenerate-all` to recreate initramfs
+images. If `/etc/defalt/initramfs-regenerate` exists and defines
+`INITRAMFS_GENERATOR=mkinitcpio`, the trigger will instead use `mkinitcpio` and
+loop over all kernel versions for which modules appear to be installed.
+Alternatively, setting `INITRAMFS_GENERATOR=none` will disable image
+regeneration entirely.
+
 <a id="triggers_kernel_hooks"></a>
 #### kernel-hooks
 
@@ -2093,4 +2131,4 @@ to pull in new changes:
 ## Help
 
 If after reading this `manual` you still need some kind of help, please join
-us at `#xbps` via IRC at `irc.freenode.net`.
+us at `#xbps` via IRC at `irc.libera.chat`.

@@ -1,15 +1,15 @@
 # Template file for 'kicad-footprints'
 pkgname=kicad-footprints
-version=5.1.9
+version=5.1.11
 revision=1
 build_style=cmake
 depends="kicad"
 short_desc="Kicad footprint libraries"
 maintainer="Urs Schulz <voidpkgs@ursschulz.de>"
 license="CC-BY-SA-4.0"
-homepage="http://kicad-pcb.org"
+homepage="http://kicad.org"
 distfiles="https://gitlab.com/kicad/libraries/${pkgname}/-/archive/${version}/${pkgname}-${version}.tar.gz"
-checksum=415e014364d1c12584f115a4adfeec1b71e41e2cd7f4ae543237ee71b8ef41bd
+checksum=320cae2d830cfb4ff50f187f36c9e7c3c1565fbd6ea5b064e98ec44891ea8b9e
 
 post_install() {
 	# otherwise KiCad will complain about a missing library when launched

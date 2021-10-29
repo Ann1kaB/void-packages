@@ -1,23 +1,22 @@
 # Template file for 'gzdoom'
 pkgname=gzdoom
-version=4.4.2
+version=4.7.1
 revision=1
-_tagdate=2020-06-16
+_tagdate=2021-10-20
 wrksrc="${pkgname}-g${version}"
 build_style=cmake
-configure_args="-DINSTALL_PK3_PATH=share/gzdoom"
+configure_args="-DINSTALL_PK3_PATH=share/gzdoom -DDYN_GTK=OFF -DDYN_OPENAL=OFF"
 hostmakedepends="pkg-config tar xz"
-makedepends="SDL2-devel gtk+3-devel fluidsynth-devel libgme-devel libgomp-devel
- ppl-devel ZMusic-devel"
-depends="gtk+3"
+makedepends="SDL2-devel gtk+3-devel libgomp-devel ZMusic-devel libopenal-devel"
 short_desc="Advanced Doom source port with OpenGL support"
-maintainer="Michael Straube <straubem@gmx.de>"
+maintainer="Érico Nogueira <ericonr@disroot.org>"
 license="GPL-3.0-or-later"
 homepage="https://www.zdoom.org"
-distfiles="https://github.com/coelckers/${pkgname}/archive/g${version}.tar.gz
- https://github.com/coelckers/${pkgname}/releases/download/g${version}/${pkgname}_${version}_amd64.deb"
-checksum="d0ede9aefa8834b6d97a8a5336e57077475f43c297447f75b37550ee93010674
- ccff299967bd47c8154d3af835fe514df29fc0560831437074a4b5ada674e6ba"
+# WARNING: watch out for new submodules
+distfiles="https://github.com/coelckers/gzdoom/archive/g${version}.tar.gz
+ https://github.com/coelckers/gzdoom/releases/download/g${version}/gzdoom_${version}_amd64.deb"
+checksum="454257582be0576501eef1efc99fe7ea70f1c4d7993549db3cbc709ce75fc102
+ af1501c05815a7945a335704f6f05ac263c5877549fa3f476478077b56ea14f2"
 skip_extraction="${pkgname}_${version}_amd64.deb"
 nocross=yes
 
@@ -32,7 +31,9 @@ esac
 post_extract() {
 	bsdtar xOf ${XBPS_SRCDISTDIR}/${pkgname}-${version}/${pkgname}_${version}_amd64.deb data.tar.xz |
 	tar --strip-components=4 -xJf - ./usr/share/{pixmaps/gzdoom.png,applications/gzdoom.desktop}
+}
 
+post_patch() {
 	vsed -e "s|GIT_DESCRIPTION|\"${version}\"|g" -i src/gitinfo.cpp
 	vsed -e "s|VERSIONSTR|\"${version}\"|g" -i src/gitinfo.cpp
 	vsed -e "s|GIT_TIME|\"${_tagdate}\"|g" -i src/gitinfo.cpp

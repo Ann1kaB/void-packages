@@ -1,6 +1,6 @@
 # Template file for 'txr'
 pkgname=txr
-version=248
+version=270
 revision=1
 archs="x86_64* i686* aarch64* arm* ppc64* mips*"
 build_style=configure
@@ -11,9 +11,9 @@ short_desc="Programming language for convenient data munging"
 maintainer="Oliver Kiddle <okiddle@yahoo.co.uk>"
 license="BSD-2-Clause"
 homepage="http://www.nongnu.org/txr/"
-changelog="http://www.kylheku.com/cgit/txr/tree/RELNOTES?id=${pkgname}-${version}"
+changelog="http://www.kylheku.com/cgit/txr/tree/RELNOTES"
 distfiles="http://www.kylheku.com/cgit/txr/snapshot/${pkgname}-${version}.tar.bz2"
-checksum=58d04f9112b966f0b32e5ddf198622c97b4caaf990db23b5980eae7b44e3415e
+checksum=6e0fe840ee91430888a08db8ef7739b1884fa43e8b2b5e173e6ae3eda3150291
 nopie=yes
 
 if [ "$CROSS_BUILD" ]; then
@@ -26,9 +26,9 @@ pre_configure() {
 	fi
 }
 
-post_configure() {
-	vsed -i config.make -e "\#^PLATFORM_CFLAGS#s#:=.*\$#:= ${CFLAGS}#"
-	vsed -i config.make -e "\#^PLATFORM_LDFLAGS#s#:=.*\$#:= ${LDFLAGS}#"
+pre_check() {
+	# UDP server/client test for IPv6 fails in github CI
+	vsed -i -e 's/,\*maybe-ipv6//' tests/014/dgram-stream.tl
 }
 
 post_install() {

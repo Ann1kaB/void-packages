@@ -1,12 +1,12 @@
 # Template file for 'pipe-viewer'
 pkgname=pipe-viewer
-version=0.0.9
+version=0.1.5
 revision=1
 build_style=perl-ModuleBuild
 configure_args="--gtk"
 hostmakedepends="perl-Module-Build"
 depends="perl-Data-Dump perl-JSON perl-LWP-Protocol-https perl-Term-ReadLine-Gnu
- perl-Unicode-LineBreak perl-JSON-XS"
+ perl-Unicode-LineBreak perl-JSON-XS perl-HTML-Parser"
 checkdepends="perl-Test-Pod"
 short_desc="Search and play videos from YouTube without an API key"
 maintainer="Roberto Ricci <ricci@disroot.org>"
@@ -14,7 +14,7 @@ license="Artistic-2.0"
 homepage="https://github.com/trizen/pipe-viewer"
 changelog="https://github.com/trizen/pipe-viewer/releases"
 distfiles="https://github.com/trizen/pipe-viewer/archive/${version}.tar.gz"
-checksum=598ec7c39be0a42900ed1f4c5c68c26a728dd09b774e9dd38a873aa2def76e27
+checksum=2b2aaabeba4335e661c9dba0abad3ee7d30a5028446f252100db6e5d3bea90d5
 
 pipe-viewer-gtk_package() {
 	depends="${sourcepkg}>=${version}_${revision} perl-Gtk3 perl-File-ShareDir"
@@ -24,4 +24,16 @@ pipe-viewer-gtk_package() {
 		vmove "usr/share/perl5/vendor_perl/auto/share/dist/WWW-PipeViewer/gtk-*"
 		vmove usr/share/perl5/vendor_perl/auto/share/dist/WWW-PipeViewer/icons
 	}
+}
+
+straw-viewer_package() {
+	build_style=meta
+	depends="pipe-viewer>=${version}_${revision}"
+	short_desc="Search and stream from YouTube using the API of invidio.us (transitional dummy package)"
+}
+
+gtk-straw-viewer_package() {
+	build_style=meta
+	depends="pipe-viewer-gtk>=${version}_${revision}"
+	short_desc="Gtk interface to search and stream YouTube using the API of invidio.us (transitional dummy package)"
 }

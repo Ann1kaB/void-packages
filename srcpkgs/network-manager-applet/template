@@ -1,7 +1,7 @@
 # Template file for 'network-manager-applet'
 pkgname=network-manager-applet
-version=1.20.0
-revision=2
+version=1.24.0
+revision=1
 build_style=meson
 configure_args="-Dselinux=false"
 hostmakedepends="dbus-glib-devel glib-devel intltool pkg-config"
@@ -16,6 +16,5 @@ license="GPL-2.0-or-later"
 homepage="https://wiki.gnome.org/Projects/NetworkManager"
 changelog="https://raw.githubusercontent.com/NetworkManager/network-manager-applet/master/NEWS"
 distfiles="${GNOME_SITE}/${pkgname}/${version%.*}/${pkgname}-${version}.tar.xz"
-checksum=8ab205385d8380e3b7e4994b46f6ff009c453e3430bd2b2853c74263f69a5253
-patch_args=-Np1
+checksum=b9f4bca5d0352718e07b7385fb195a9bbc8fd686b7959b74137854d52aab9c58
 lib32disabled=yes

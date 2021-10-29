@@ -1,7 +1,7 @@
 # Template file for 'kitty'
 pkgname=kitty
-version=0.19.3
-revision=1
+version=0.23.1
+revision=2
 pycompile_dirs="usr/lib/kitty"
 hostmakedepends="pkg-config python3 wayland-devel wayland-protocols"
 makedepends="gettext-devel glfw-devel harfbuzz-devel libxkbcommon-devel
@@ -13,8 +13,7 @@ license="GPL-3.0-or-later"
 homepage="https://sw.kovidgoyal.net/kitty/"
 changelog="https://sw.kovidgoyal.net/kitty/changelog.html"
 distfiles="https://github.com/kovidgoyal/kitty/releases/download/v${version}/kitty-${version}.tar.xz"
-checksum=16d843356b0697db2b71754b4afd8d43166a0f0561e606107f6a4b9519624e4f
-patch_args="-Np1"
+checksum=5190f5eeb4653ac2ca02885623fd3aa10da1c82260c5b9866614ef4fd7427856
 python_version=3
 LDFLAGS+=" -Wl,-z,stack-size=2097152"
 

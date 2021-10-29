@@ -1,7 +1,7 @@
 # Template file for 'python-urllib3'
 pkgname=python-urllib3
-version=1.26.3
-revision=1
+version=1.26.6
+revision=2
 wrksrc="urllib3-${version}"
 build_style=python-module
 hostmakedepends="python-setuptools python3-setuptools"
@@ -11,7 +11,9 @@ maintainer="Alessio Sergi <al3hex@gmail.com>"
 license="MIT"
 homepage="https://urllib3.readthedocs.io/"
 distfiles="${PYPI_SITE}/u/urllib3/urllib3-${version}.tar.gz"
-checksum=de3eedaad74a2683334e282005cd8d7f22f4d55fa690a2a1020a416cb0a47e73
+checksum=f57b4c16c62fa2760b7e3d97c35b255512fb6b59a259730f36ba32ce9f8e342f
+# Checks depend on unpackaged "trustme"
+make_check=no
 
 post_install() {
 	for sitelib in ${py3_sitelib} ${py2_sitelib}; do

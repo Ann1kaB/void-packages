@@ -1,6 +1,6 @@
 # Template file for 'libSavitar'
 pkgname=libSavitar
-version=4.7.1
+version=4.11.0
 revision=2
 build_style=cmake
 hostmakedepends="python3"
@@ -10,7 +10,7 @@ maintainer="Karl Nilsson <karl.robert.nilsson@gmail.com>"
 license="LGPL-3.0-or-later"
 homepage="https://github.com/Ultimaker/libSavitar"
 distfiles="https://github.com/Ultimaker/libSavitar/archive/${version}.tar.gz"
-checksum=3287d155e20744bf09cfddb4dede72adb579c9dcc0a74e6f12ddde57f4d417b0
+checksum=fb0cb3d6b063e9f8ae88c0ef34dcbca5b0a4c6f8d841847c02cd4741decd16f9
 
 if [ "$CROSS_BUILD" ]; then
 	hostmakedepends+=" python3-sip-devel"

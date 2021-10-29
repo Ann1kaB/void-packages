@@ -1,11 +1,14 @@
 # Template file for 'plasma-workspace'
 pkgname=plasma-workspace
-version=5.21.4
+version=5.23.1
 revision=1
 build_style=cmake
-configure_args="-DBUILD_TESTING=OFF -DWaylandScanner_EXECUTABLE=/usr/bin/wayland-scanner"
+configure_args="-DBUILD_TESTING=OFF
+ -DWaylandScanner_EXECUTABLE=/usr/bin/wayland-scanner
+ -DKF5_HOST_TOOLING=/usr/lib/cmake"
 hostmakedepends="extra-cmake-modules iso-codes pkg-config kdoctools kcoreaddons
- qt5-wayland plasma-wayland-protocols gettext wayland-devel"
+ qt5-wayland plasma-wayland-protocols gettext wayland-devel
+ kcmutils kpackage-devel kconfig-devel kcoreaddons-devel plasma-framework"
 makedepends="qt5-devel qt5-declarative-devel qt5-script-devel plasma-framework-devel
  krunner-devel kjsembed-devel knotifyconfig-devel kdesu-devel knewstuff-devel
  kcmutils-devel kidletime-devel kdelibs4support-devel libksysguard-devel
@@ -20,14 +23,10 @@ maintainer="John <me@johnnynator.dev>"
 license="GPL-2.0-or-later, GFDL-1.2-or-later, LGPL-2.1-or-later"
 homepage="https://invent.kde.org/plasma/plasma-workspace"
 distfiles="${KDE_SITE}/plasma/${version}/${pkgname}-${version}.tar.xz"
-checksum=ba0b184570b62be84be2f8108fccadd08de8f3abf8a0f615a6f06f829bd628d5
+checksum=fbf979f857b3cdcc8fe6dc45c3a1d9dfe297e1120aa551a02faa339abb81efad
 
 build_options="pipewire"
-
-if [ "$CROSS_BUILD" ]; then
-	hostmakedepends+=" kcmutils kpackage-devel kconfig-devel kcoreaddons-devel plasma-framework"
-	configure_args+=" -DKF5_HOST_TOOLING=/usr/lib/cmake"
-fi
+build_options_default="pipewire"
 
 kworkspace_package() {
 	short_desc="Plasma Workspace Library for KF5"

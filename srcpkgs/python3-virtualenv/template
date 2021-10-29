@@ -1,7 +1,7 @@
 # Template file for 'python3-virtualenv'
 pkgname=python3-virtualenv
-version=20.4.2
-revision=1
+version=20.4.7
+revision=2
 wrksrc="virtualenv-${version}"
 build_style=python3-module
 hostmakedepends="python3-setuptools_scm"
@@ -13,7 +13,7 @@ license="MIT"
 homepage="https://virtualenv.pypa.io/"
 changelog="https://virtualenv.pypa.io/en/latest/changelog.html"
 distfiles="${PYPI_SITE}/v/virtualenv/virtualenv-${version}.tar.gz"
-checksum=147b43894e51dd6bba882cf9c282447f780e2251cd35172403745fc381a0a80d
+checksum=14fdf849f80dbb29a4eb6caa9875d476ee2a5cf76a5f5415fa2f1606010ab467
 alternatives="virtualenv:virtualenv:/usr/bin/virtualenv3"
 
 do_check() {

@@ -3,12 +3,12 @@
 # THIS PKG MUST BE SYNCHRONIZED WITH "srcpkgs/firefox-esr-i18n".
 #
 pkgname=firefox-esr
-version=78.8.0
+version=78.14.0
 revision=1
 wrksrc="firefox-${version}"
 build_helper="rust qemu"
 hostmakedepends="autoconf213 unzip zip pkg-config perl python3 yasm rust cargo
- llvm clang nodejs-lts-10 cbindgen python nasm which tar"
+ llvm clang nodejs-lts cbindgen python nasm which tar"
 makedepends="nss-devel libjpeg-turbo-devel gtk+-devel gtk+3-devel icu-devel
  pixman-devel libevent-devel libnotify-devel libvpx-devel
  libXrender-devel libXcomposite-devel libSM-devel libXt-devel rust-std
@@ -22,12 +22,16 @@ maintainer="Orphaned <orphan@voidlinux.org>"
 license="MPL-2.0, GPL-2.0-or-later, LGPL-2.1-or-later"
 homepage="https://www.mozilla.org/firefox/organizations/"
 distfiles="${MOZILLA_SITE}/firefox/releases/${version}esr/source/firefox-${version}esr.source.tar.xz"
-checksum=1cf2dfdee2e31fd0a5ecced6275a33fa11bee1d2a7c65e23350b26992584a110
+checksum=aa0e28a4150c33a165120a24f20e0373e74635c9f812732a08850d71cda3b2fa
 lib32disabled=yes
 conflicts="firefox>=0"
 
 build_options="alsa jack dbus pulseaudio xscreensaver sndio wayland"
 build_options_default="alsa jack dbus pulseaudio xscreensaver sndio wayland"
+
+if [ "$XBPS_TARGET_NO_ATOMIC8" ]; then
+	makedepends+=" libatomic-devel"
+fi
 
 case $XBPS_TARGET_MACHINE in
 	armv[56]*) broken="required NEON extensions are not supported on armv[56]" ;;
@@ -36,10 +40,6 @@ case $XBPS_TARGET_MACHINE in
 esac
 
 CXXFLAGS="-Wno-class-memaccess -Wno-unused-function"
-
-if [ "$XBPS_TARGET_NO_ATOMIC8" ]; then
-	makedepends+=" libatomic-devel"
-fi
 
 # We need this because cargo verifies checksums of all files
 # in vendor crates when it builds and gives us no way to

@@ -1,6 +1,6 @@
 # Template file for 'postgresql13'
 pkgname=postgresql13
-version=13.2
+version=13.4
 revision=2
 wrksrc="postgresql-${version}"
 build_style=gnu-configure
@@ -15,14 +15,13 @@ configure_args="--with-openssl --with-python
 hostmakedepends="docbook2x gettext flex openjade"
 makedepends="libfl-devel openssl-devel libuuid-devel libxslt-devel pam-devel perl
  python3-devel readline-devel tcl-devel"
-checkdepends="tzdata"
 short_desc="Sophisticated open-source Object-Relational DBMS"
 maintainer="Piotr Wójcik <chocimier@tlen.pl>"
 license="PostgreSQL"
 homepage="https://www.postgresql.org"
 changelog="https://www.postgresql.org/docs/current/release-${version//./-}.html"
 distfiles="https://ftp.postgresql.org/pub/source/v${version}/postgresql-${version}.tar.bz2"
-checksum=5fd7fcd08db86f5b2aed28fcfaf9ae0aca8e9428561ac547764c2a2b0f41adfc
+checksum=ea93e10390245f1ce461a54eb5f99a48d8cabd3a08ce4d652ec2169a357bc0cd
 
 conf_files="
  /${_prefix}/etc/default/postgresql

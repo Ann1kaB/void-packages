@@ -1,10 +1,10 @@
 # Template file for 'bcc'
 pkgname=bcc
-version=0.19.0
-revision=1
+version=0.22.0
+revision=2
 wrksrc="bcc"
 build_style=cmake
-configure_args="-DREVISION=${version}"
+configure_args="-DREVISION=${version} -DENABLE_LLVM_SHARED=1"
 hostmakedepends="flex python3"
 makedepends="clang clang-tools-extra elfutils-devel flex lld-devel llvm
  ncurses-devel python3-devel zlib-devel"
@@ -12,8 +12,8 @@ short_desc="BPF-based Linux IO analysis, networking, monitoring, and more"
 maintainer="Leah Neukirchen <leah@vuxu.org>"
 license="Apache-2.0"
 homepage="https://github.com/iovisor/bcc"
-distfiles="https://github.com/iovisor/bcc/releases/download/v${version}/bcc-src-with-submodule.tar.gz"
-checksum=4c41fc1a6a7ef2084b43c52c1b2e6104230ba9f31e02958416bf131d848e74e4
+distfiles="https://github.com/iovisor/bcc/releases/download/v${version}/bcc-src-with-submodule.tar.gz>bcc-${version}.tar.gz"
+checksum=9d195db7fe617cdde03e2af7cfd1ac07751aaf0e7e966aaa19237db8fe91fd40
 python_version="3"
 
 if [ "$XBPS_TARGET_NO_ATOMIC8" ]; then
@@ -26,7 +26,11 @@ post_extract() {
 }
 bcc-tools_package() {
 	short_desc+=" - tools"
-	depends="python3-bcc>=${version}_${revision} linux-headers"
+	depends="python3-bcc>=${version}_${revision}"
+	case "$XBPS_TARGET_MACHINE" in
+		# only add linux-headers for archs it's currently built for
+		i686*|x86_64*|ppc*|aarch64*) depends+=" linux-headers";;
+	esac
 	pkg_install() {
 		vmove usr/share/bcc/man/man8
 		mv ${PKGDESTDIR}/usr/share/bcc/man ${PKGDESTDIR}/usr/share/man

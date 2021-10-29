@@ -49,7 +49,7 @@ SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 _EOF
-		cmake_args+=" -DCMAKE_TOOLCHAIN_FILE=cross_${XBPS_CROSS_TRIPLET}.cmake"
+		cmake_args+=" -DCMAKE_TOOLCHAIN_FILE=${wrksrc}/${build_wrksrc}/${cmake_builddir}/cross_${XBPS_CROSS_TRIPLET}.cmake"
 	fi
 	cmake_args+=" -DCMAKE_INSTALL_PREFIX=/usr"
 	cmake_args+=" -DCMAKE_BUILD_TYPE=None"
@@ -63,8 +63,8 @@ _EOF
 	cmake_args+=" -DCMAKE_INSTALL_SBINDIR=bin"
 
 	export CMAKE_GENERATOR="${CMAKE_GENERATOR:-Ninja}"
-	# Override flags: https://gitlab.kitware.com/cmake/cmake/issues/19590
-	CFLAGS="${CFLAGS/ -pipe / }" CXXFLAGS="${CXXFLAGS/ -pipe / }" \
+	# Remove -pipe: https://gitlab.kitware.com/cmake/cmake/issues/19590
+	CFLAGS="-DNDEBUG ${CFLAGS/ -pipe / }" CXXFLAGS="-DNDEBUG ${CXXFLAGS/ -pipe / }" \
 		cmake ${cmake_args} ${configure_args} ${wrksrc}/${build_wrksrc}
 
 	# Replace -isystem with -I
@@ -113,7 +113,7 @@ do_check() {
 
 	: ${make_check_target:=test}
 
-	CTEST_OUTPUT_ON_FAILURE=TRUE ${make_cmd} ${make_check_args} ${make_check_target}
+	${make_cmd} ${make_check_args} ${make_check_target}
 }
 
 do_install() {

@@ -1,6 +1,6 @@
 # Template file for 'terragrunt'
 pkgname=terragrunt
-version=0.28.7
+version=0.35.5
 revision=1
 build_style=go
 go_import_path="github.com/gruntwork-io/terragrunt"
@@ -11,7 +11,7 @@ maintainer="Andrea Brancaleoni <abc@pompel.me>"
 license="MIT"
 homepage="https://github.com/gruntwork-io/terragrunt"
 distfiles="$homepage/archive/v$version.tar.gz"
-checksum=e84d4ade9ffbc1ca9e0a2b9cf594915a9515d331cfcc65f78b6c36b0cb3b53cc
+checksum=b6c221311a2092b61f281e448d6e0ce7e953c3e2cb0deab646bf4f68884f30d7
 
 post_install() {
 	vlicense LICENSE.txt

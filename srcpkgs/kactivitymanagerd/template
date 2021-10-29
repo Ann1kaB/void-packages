@@ -1,8 +1,9 @@
 # Template file for 'kactivitymanagerd'
 pkgname=kactivitymanagerd
-version=5.21.4
+version=5.23.1
 revision=1
 build_style=cmake
+build_helper="qemu"
 configure_args="-DBUILD_TESTING=OFF"
 hostmakedepends="extra-cmake-modules gettext qt5-qmake qt5-host-tools kcoreaddons"
 makedepends="kio-devel boost-devel qt5-plugin-mysql qt5-plugin-odbc
@@ -12,9 +13,4 @@ maintainer="John <me@johnnynator.dev>"
 license="GPL-2.0-or-later"
 homepage="https://invent.kde.org/plasma/kactivitymanagerd"
 distfiles="${KDE_SITE}/plasma/${version}/${pkgname}-${version}.tar.xz"
-checksum=2684b61713223f7d8f1e064689fef13e54f2ade6b767a6229294e25bfce54a71
-
-if [ "$CROSS_BUILD" ]; then
-	configure_args+=" -DRUN_RESULT_VAR=0"
-	configure_args+=" -DRUN_RESULT_VAR__TRYRUN_OUTPUT=0"
-fi
+checksum=eabc518b1476f17257c6f42c986611604903aa9efc42d35fd9d3fd15839fea09

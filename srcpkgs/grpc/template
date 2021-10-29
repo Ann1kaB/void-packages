@@ -1,9 +1,8 @@
 # Template file for 'grpc'
 pkgname=grpc
-reverts="1.37.0_1"
-version=1.36.4
+version=1.39.1
 revision=2
-_abseilver=6f9d96a1f41439ac172ee2ef7ccd8edf0e5d068c
+_abseilver=997aaf3a28308eba1b9156aa35ab7bca9688e9f6
 build_style=cmake
 configure_args="-DBUILD_SHARED_LIBS=ON
  -DgRPC_CARES_PROVIDER=package -DgRPC_PROTOBUF_PROVIDER=package
@@ -14,13 +13,13 @@ hostmakedepends="which protobuf"
 _devel_depends="c-ares-devel re2-devel zlib-devel openssl-devel"
 makedepends="libprotoc-devel protobuf-devel gperftools-devel ${_devel_depends}"
 short_desc="High performance, open source, general RPC framework"
-maintainer="Andrew J. Hesford <ajh@sideband.org>"
+maintainer="Orphaned <orphan@voidlinux.org>"
 license="Apache-2.0"
 homepage="https://github.com/grpc/grpc"
 distfiles="${homepage}/archive/v${version}/${pkgname}-${version}.tar.gz
  https://github.com/abseil/abseil-cpp/archive/${_abseilver}/abseil-cpp-${_abseilver}.tar.gz"
-checksum="8eb9d86649c4d4a7df790226df28f081b97a62bf12c5c5fe9b5d31a29cd6541a
- 62c27e7a633e965a2f40ff16b487c3b778eae440bab64cad83b34ef1cbe3aa93"
+checksum="024118069912358e60722a2b7e507e9c3b51eeaeee06e2dd9d95d9c16f6639ec
+ 35f22ef5cb286f09954b7cc4c85b5a3f6221c9d4df6b8c4a1e9d399555b366ee"
 
 if [ "$CROSS_BUILD" ]; then
 	# need host grpc_cpp_plugin
@@ -41,20 +40,22 @@ post_patch() {
 	# re2 doesn't install CMake config modules;
 	# key variables are set in configure_args
 	vsed -i CMakeLists.txt -e '/include(cmake\/re2\.cmake)/d'
+}
 
-	# override building shared abseil libs
-	vsed -i third_party/abseil-cpp/CMakeLists.txt \
-		-e "/project(absl CXX)/a set(BUILD_SHARED_LIBS OFF)"
+post_build() {
+	# Clean up unneeded absl linker arguments from pkgconfig files
+	sed -e 's/-labsl_[^[:space:]]\+[[:space:]]*//g' \
+		-i build/libs/opt/pkgconfig/*.pc
+
+	# Add custom absl include root to grpcpp cflags
+	sed -e 's,^Cflags:.*,& -I${includedir}/grpc_absl,' \
+		-i build/libs/opt/pkgconfig/grpc++*.pc
 }
 
 post_install() {
-	# CMake seems to install these no matter what.
-	# For now, they do not appear to be necessary, so scrub them.
-	rm ${DESTDIR}/usr/lib/libabsl*.a
-
-	# Remove hard-coded absl linker args from pkgconfig files
-	sed -e 's/-labsl_[^[:space:]]\+[[:space:]]*//g' \
-		-i ${DESTDIR}/usr/lib/pkgconfig/*.pc
+	# Remove unnecessary absl static libs and cmake modules
+	rm "${DESTDIR}"/usr/lib/libabsl*.a
+	rm -rf "${DESTDIR}/usr/lib/cmake/absl"
 }
 
 grpc-devel_package() {

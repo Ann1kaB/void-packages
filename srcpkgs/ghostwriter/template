@@ -1,6 +1,6 @@
 # Template file for 'ghostwriter'
 pkgname=ghostwriter
-version=1.8.1
+version=2.0.2
 revision=1
 build_style=qmake
 hostmakedepends="pkg-config qt5-qmake qt5-host-tools"
@@ -11,8 +11,8 @@ short_desc="Distraction-free Markdown editor"
 maintainer="Andrew Benson <abenson+void@gmail.com>"
 license="GPL-3.0-or-later"
 homepage="http://wereturtle.github.io/ghostwriter"
-distfiles="https://github.com/wereturtle/ghostwriter/archive/v${version}.tar.gz"
-checksum=2b73fed6a95ebcd45333fe4b12acb491eb4171fca8a11eea1af9bbdc73ed4b69
+distfiles="https://github.com/wereturtle/ghostwriter/archive/${version}.tar.gz"
+checksum=9b7b02a58d78f5cbc535bdf5821f0012c66d6e92fc39b8b80ca59d23adb4f71c
 
 case "$XBPS_TARGET_MACHINE" in
 	armv5tel*) broken="qtwebengine not built for this platform";;
@@ -21,3 +21,7 @@ case "$XBPS_TARGET_MACHINE" in
 		broken="qtwebengine not built for this platform"
 	fi;;
 esac
+
+post_install() {
+	vdoc "${FILESDIR}/README.voidlinux"
+}

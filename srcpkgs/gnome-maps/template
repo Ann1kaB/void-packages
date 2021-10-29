@@ -1,6 +1,6 @@
 # Template file for 'gnome-maps'
 pkgname=gnome-maps
-version=40.0
+version=40.4
 revision=1
 build_style=meson
 build_helper="gir"
@@ -13,4 +13,4 @@ maintainer="Enno Boland <gottox@voidlinux.org>"
 license="GPL-2.0-or-later"
 homepage="https://wiki.gnome.org/Apps/Maps"
 distfiles="${GNOME_SITE}/${pkgname}/${version%.*}/${pkgname}-${version}.tar.xz"
-checksum=ec11dc6c9eea2698592500daf3ad673c1e4f64ebeb0d3d2823fb8655bb5d4a49
+checksum=2c5b7e1e65f7f4e54fe86eddda1138eaa6c0691a149403d95cbe22edc822509c

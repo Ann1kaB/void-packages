@@ -1,7 +1,7 @@
 # Template file for 'nftables'
 pkgname=nftables
-version=0.9.8
-revision=1
+version=1.0.0
+revision=2
 build_style=gnu-configure
 configure_args="--sbindir=/usr/bin --with-json --with-python-bin=/bin/python3"
 hostmakedepends="python3 asciidoc docbook2x flex pkg-config"
@@ -11,7 +11,7 @@ maintainer="Leah Neukirchen <leah@vuxu.org>"
 license="GPL-2.0-only"
 homepage="http://netfilter.org/projects/nftables/"
 distfiles="http://www.netfilter.org/projects/${pkgname}/files/${pkgname}-${version}.tar.bz2"
-checksum=60fc004656dae4fefc4901c939c9d64120b4dedb49738e420a9a34989f108fe4
+checksum=58bf547daf967a2b88ecb4f425f126006ebde22711db806b25c1d6cf84fe45f4
 
 post_install() {
 	vsv nftables

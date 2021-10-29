@@ -1,6 +1,6 @@
 # Template file for 'libkipi5'
 pkgname=libkipi5
-version=20.12.3
+version=21.08.2
 revision=1
 wrksrc="libkipi-${version}"
 build_style=cmake
@@ -13,7 +13,7 @@ maintainer="John <me@johnnynator.dev>"
 license="GPL-2.0-or-later"
 homepage="https://invent.kde.org/graphics/libkipi"
 distfiles="${KDE_SITE}/release-service/${version}/src/libkipi-${version}.tar.xz"
-checksum=bb6fff214e3a74e17cb7b49f5e9a92252127ec6cb65e6832da3ac789c7bd14a8
+checksum=90eb5f3b61b86b766d8c8da181b928d333d0df2dd34418553a3e11db9e52918c
 conflicts="libkipi"
 
 libkipi5-devel_package() {

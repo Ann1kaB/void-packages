@@ -1,6 +1,6 @@
 # Template file for 'janet'
 pkgname=janet
-version=1.15.4
+version=1.18.1
 revision=1
 build_style=meson
 configure_args="-Db_lto=false"  # breaks jpm
@@ -8,8 +8,9 @@ short_desc="Dynamic Lisp dialect and bytecode VM"
 maintainer="Leah Neukirchen <leah@vuxu.org>"
 license="MIT"
 homepage="https://janet-lang.org/"
+changelog="https://github.com/janet-lang/janet/blob/master/CHANGELOG.md"
 distfiles="https://github.com/janet-lang/janet/archive/v${version}.tar.gz"
-checksum=8eed302c8ded1df882544d13ce7e415b213cf7bc8fa77ca16110c89b36d19763
+checksum=bfc29c11a070cc175666f74eb99ea992276d6e269701ba9558a72cef05ac80b4
 
 post_install() {
 	vlicense LICENSE

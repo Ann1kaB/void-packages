@@ -1,10 +1,10 @@
 # Template file for 'libtls'
 pkgname=libtls
-version=3.2.4
-revision=2
+version=3.3.5
+revision=1
 wrksrc="libressl-${version}"
 build_style=gnu-configure
-configure_args="$(vopt_enable asm)"
+configure_args="--enable-libtls-only --enable-nc $(vopt_enable asm)"
 hostmakedepends="automake libtool"
 depends="ca-certificates"
 short_desc="Version of the TLS/crypto stack forked from OpenSSL"
@@ -13,7 +13,7 @@ license="OpenSSL, ISC"
 homepage="http://www.libressl.org/"
 changelog="https://raw.githubusercontent.com/libressl-portable/portable/master/ChangeLog"
 distfiles="http://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-${version}.tar.gz"
-checksum=ac1dbb9e05a64910856599b1ac61118fdec1b3d0c700e42444d81c0d5f507a5a
+checksum=0a51393f0df1cf27e070054a2788a4d073339f363d79cd594076a1b4c48be9a5
 _lssl_asm_ver="1.2.0"
 replaces="libtls20>0"
 
@@ -48,18 +48,11 @@ pre_configure() {
 
 do_install() {
 	make -C tls install DESTDIR="$DESTDIR"
-	make -C apps/nc install DESTDIR="$DESTDIR"
-	# libtls expects certs linked to /etc/ssl/cert.pem
-	# instead of OpenSSL's /etc/ssl/certs.pem
-	# Create a symlink for now while awaiting discussion.
-	vmkdir etc/ssl
-	ln -s certs.pem ${DESTDIR}/etc/ssl/cert.pem
 	vlicense COPYING
 	if [ "$build_option_asm" ]; then
 		vlicense libressl-portable-asm-${_lssl_asm_ver}/LICENSE.cryptogams
 		vlicense libressl-portable-asm-${_lssl_asm_ver}/LICENSE.openssl
 	fi
-	#find ${DESTDIR}/usr/share/man/man1 -type f ! -name openssl.1 -delete
 }
 
 libtls-devel_package() {

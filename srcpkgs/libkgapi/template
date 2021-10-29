@@ -1,18 +1,17 @@
 # Template file for 'libkgapi'
 pkgname=libkgapi
-version=20.12.3
+version=21.08.2
 revision=1
 build_style=cmake
 hostmakedepends="extra-cmake-modules qt5-host-tools qt5-qmake python3
  gettext kcoreaddons"
-makedepends="kcalendarcore-devel kcontacts-devel kio-devel qt5-webengine-devel
- qt5-webchannel-devel qt5-location-devel"
+makedepends="kcalendarcore-devel kcontacts-devel kio-devel qt5-location-devel"
 short_desc="KDE-based library for accessing various Google services"
 maintainer="John <me@johnnynator.dev>"
 license="LGPL-2.1-or-later"
 homepage="https://invent.kde.org/pim/libkgapi"
 distfiles="${KDE_SITE}/release-service/${version}/src/${pkgname}-${version}.tar.xz"
-checksum=fd668411c3d1e9f65237d15d884efd5cfb7cae0a90fa517bcf833f3980653941
+checksum=40e95815d7c84edc86748c1ea2dbcb1ca187448af2c9a76460f3e3b12352b68d
 
 do_check() {
 	:

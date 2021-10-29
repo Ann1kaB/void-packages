@@ -1,6 +1,6 @@
 # Template file for 'broot'
 pkgname=broot
-version=1.1.10
+version=1.6.4
 revision=1
 build_style=cargo
 short_desc="Interactive directory tree view, fuzzy search, balanced BFS descent"
@@ -8,7 +8,7 @@ maintainer="SolitudeSF <solitudesf@protonmail.com>"
 license="MIT"
 homepage="https://dystroy.org/broot/"
 distfiles="https://github.com/Canop/broot/archive/v${version}.tar.gz"
-checksum=f40e63cf8bcf7d70a42d528696fe0355ff5a4a80cfd654593dabdd866613bc60
+checksum=609bd9e6c7fea85b68586435280b37cb90c2af3cb0a3f63a5a37dfdcc822fdc7
 
 case "$XBPS_TARGET_MACHINE" in
 	ppc64*) ;;

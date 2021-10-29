@@ -1,14 +1,14 @@
 # Template file for 'amdvlk'
 pkgname=amdvlk
-version=2021.Q1.4
+version=2021.Q3.7
 revision=1
-_llpc_commit=2692228d80d8be2221641b719eb7135f52bc34aa
-_xgl_commit=e5c5ad454049892ed803b0adcc15ef6fb27ec50e
-_pal_commit=575d41ff01c856d9566168d65b31e4b49db4734b
-_llvm_project_commit=90d06712ff54e242b7bd225321e4fc8629292d46
-_spvgen_commit=59823e6c3557cb7f3fae4a9f2760ad3f6b694997
+_llpc_commit=b8ba5f3626f07dbf76026a05394bc2b5c99fe713
+_xgl_commit=9244bd33f361bbfd23df14789e82457a63d70d5d
+_pal_commit=8e5baae7cfdd885974013337e556e9dc955b6737
+_llvm_project_commit=2108ca319b3f5d5e84603e6644365cd14a58c0de
+_spvgen_commit=ac9911afeff0e33ee240c01a593b156f0bc6f6af
 _MetroHash_commit=3c566dd9cda44ca7fd97659e0b53ac953f9037d2
-_CWPack_commit=7387247eb9889ddcabbc1053b9c2052e253b088e
+_CWPack_commit=39f8940199e60c44d4211cf8165dfd12876316fa
 archs="i686* x86_64*"
 create_wrksrc=yes
 build_wrksrc="xgl"
@@ -18,7 +18,7 @@ configure_args="-DBUILD_WAYLAND_SUPPORT=ON
  -DXGL_CWPACK_PATH=../../cwpack
  -DLLVM_PARALLEL_LINK_JOBS=2"
 hostmakedepends="pkg-config python3 perl"
-makedepends="libxml2-devel xorg-server-devel libXrandr-devel libffi-devel"
+makedepends="libxml2-devel xorg-server-devel libXrandr-devel libffi-devel wayland-devel"
 depends="vulkan-loader"
 short_desc="AMD Open Source Driver For Vulkan"
 maintainer="John <me@johnnynator.dev>"
@@ -32,14 +32,14 @@ distfiles="https://github.com/GPUOpen-Drivers/AMDVLK/archive/v-${version}.tar.gz
  https://github.com/GPUOpen-Drivers/spvgen/archive/${_spvgen_commit}.tar.gz
  https://github.com/GPUOpen-Drivers/MetroHash/archive/${_MetroHash_commit}.tar.gz
  https://github.com/GPUOpen-Drivers/CWPack/archive/${_CWPack_commit}.tar.gz"
-checksum="c88b946a0dd8d9442e798ce3a182b6f23ffab0b96e9967292ad6ba84c74d9273
- 1e043aee70e5690bc5934a2352a19c182e5d27c59ac9870089d979ce59c125cc
- 571fdf549864eea95e716149bbc54d6906ac74d5d5811c46047b4483256590e6
- 42e048a5ea32fb44f26ad96b538754bbffdcd9f20a019bacd1efd2302a3502ac
- e7e9a943486fb16426fb5584a992a227a3e014142bdc70e25ce18a7ccdb830f5
- 124e37608f2ef49a980c3fff9cc73bcb154c9724ee00397e0dee6cc8cf1b4244
+checksum="1b17e6c2cfe1e94e4f114a2f9e6e88ace48760e06068d3967bad6c7f62efac5e
+ beaa044cb6035d332cabd5f46dbd10a6da7fa36d27bcbfa14ec3903bddd0801a
+ 2137647bee53a36e1da61c74781b95d9b0355d8ae18169324c848fdcfebf3fc3
+ 13ea4c6cd6fd71543369968fd54d943a10458fbc965a8b3261e7592abfb5340c
+ 78bad8a9fe5eb9a2de91241e41b8050aa21ab1f19be3fdfdfabf6d5170aac939
+ a382c15bb12489a5e47eac7161d27f25c6d4d13050d710d20d6e71ad9e45ee01
  cc8ff538fede25fe023984b3fde27f09b000bdc49793534794cd1d2bf881750a
- 186060fbcf87165224ba7df0e1858b66ebc42cf190c481aef1df8d89ebab7abd"
+ 0f5f9e050bdd944b335b3dd5baafce8327b75d65ec5a2812cf0441d1172b03ea"
 nocross=yes
 lib32files="/usr/share/vulkan/icd.d/amd_icd32.json"
 
@@ -69,9 +69,7 @@ pre_configure() {
 
 do_install() {
 	vinstall build/icd/amdvlk${XBPS_TARGET_WORDSIZE}.so 644 usr/lib/
-	vinstall ${wrksrc}/AMDVLK/json/Redhat/amd_icd${XBPS_TARGET_WORDSIZE}.json \
+	vinstall build/icd/amd_icd${XBPS_TARGET_WORDSIZE}.json \
 		644 usr/share/vulkan/icd.d/
-	vsed -i ${DESTDIR}/usr/share/vulkan/icd.d/amd_icd${XBPS_TARGET_WORDSIZE}.json \
-		-e "s#/usr/lib/#/usr/lib${XBPS_TARGET_WORDSIZE}/#g"
 	vlicense ${wrksrc}/AMDVLK/LICENSE.txt
 }

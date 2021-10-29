@@ -1,6 +1,6 @@
 # Template file for 'qtcreator'
 pkgname=qtcreator
-version=4.14.2
+version=5.0.2
 revision=1
 wrksrc="qt-creator-opensource-src-${version}"
 build_style=qmake
@@ -14,8 +14,9 @@ short_desc="Cross-platform IDE for Qt developers"
 maintainer="Piotr Wójcik <chocimier@tlen.pl>"
 license="LGPL-3.0-or-later, custom:QtCompany-GPL-Exception-1.0"
 homepage="https://wiki.qt.io/Category:Tools::QtCreator"
+changelog="https://code.qt.io/cgit/qt-creator/qt-creator.git/plain/dist/changes-${version}.md"
 distfiles="https://download.qt.io/official_releases/qtcreator/${version%.*}/${version}/${wrksrc}.tar.xz"
-checksum=bd2bb62474f07466d8b59b0f751f29064deea3ed56173bce82548cb80e2d1a29
+checksum=1bf07150226da46237f26f5eaa9f090ce81ed79b9bc75e0dfa6328043e360103
 replaces="qtcreator-data>=0"
 python_version=3
 
@@ -50,7 +51,7 @@ qtcreator-full_package() {
  qt5-speech-devel qt5-styleplugins-devel qt5-svg-devel
  qt5-tools-devel qt5-virtualkeyboard-devel qt5-wayland-devel qt5-webchannel-devel
  qt5-webglplugin-devel qt5-webkit-devel qt5-websockets-devel qt5-webview-devel
- qt5-x11extras-devel qt5-xmlpatterns-devel qt5-host-tools
+ qt5-x11extras-devel qt5-xmlpatterns-devel qt5-host-tools qt5-doc
  qt5-examples qt5-imageformats qt5-graphicaleffects qt5-translations
  qt5-plugin-mysql qt5-plugin-odbc qt5-plugin-pgsql qt5-plugin-sqlite qt5-plugin-tds"
 	# Not for big endian targets and not if word sizes of host and target differ

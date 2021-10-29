@@ -1,8 +1,7 @@
 # Template file for 'mesa'
 pkgname=mesa
-version=21.0.2
+version=21.2.4
 revision=1
-wrksrc="mesa-${version}"
 build_style=meson
 configure_args="-Dglvnd=true -Dshared-glapi=enabled -Dgbm=enabled -Degl=enabled
  -Dosmesa=true -Dgles1=enabled -Dgles2=enabled -Dglx=dri -Ddri3=enabled
@@ -23,11 +22,19 @@ license="MIT, LGPL-2.1-or-later"
 homepage="https://www.mesa3d.org/"
 changelog="https://docs.mesa3d.org/relnotes/${version}.html"
 distfiles="https://mesa.freedesktop.org/archive/mesa-${version}.tar.xz"
-checksum=46c1dc5bb54a372dee43ec3c067229c299187d5bdadf1402756bbf66a6df5b88
+checksum=fe6ede82d1ac02339da3c2ec1820a379641902fd351a52cc01153f76eff85b44
 
 if [ "$XBPS_TARGET_LIBC" = "musl" ]; then
 	configure_args+=" -Duse-elf-tls=false"
 fi
+
+# only use llvmpipe on targets where it's supported and reliable
+# especially on big endian it's all kinds of broken, and e.g. on
+# 32-bit powerpc it does not work at all, so fall back to softpipe
+case "$XBPS_TARGET_MACHINE" in
+	x86_64*|aarch64*|ppc64le*|arm*) ;;
+	*) configure_args+=" -Ddraw-use-llvm=false" ;;
+esac
 
 # Set subpackages manually to set proper rdeps in 32bit pkgs.
 subpackages="libglapi libgbm libOSMesa"
@@ -84,7 +91,7 @@ fi
 
 if [ "$_have_intel" ]; then
 	_have_vulkan=yes
-	_gallium_drivers+=",iris"
+	_gallium_drivers+=",crocus,iris"
 	_vulkan_drivers+=",intel"
 	_dri_drivers+=",i915,i965"
 	subpackages+=" mesa-vulkan-intel"
@@ -152,12 +159,23 @@ fi
 _vulkan_drivers=${_vulkan_drivers/=,/=}
 _dri_drivers=${_dri_drivers/=,/=}
 
-configure_args+=" ${_gallium_drivers} ${_vulkan_drivers} ${_dri_drivers}"
+configure_args+=" ${_vulkan_drivers} ${_dri_drivers}"
 
 if [ "$_have_vulkan" ]; then
-	configure_args+=" -Dvulkan-device-select-layer=true -Dvulkan-overlay-layer=true"
+	_have_zink=yes
+	configure_args+=" -Dvulkan-layers=device-select,overlay"
+	if [ "$_have_intel" ]; then
+		configure_args+=",intel-nullhw"
+	fi
 	subpackages+=" mesa-vulkan-overlay-layer"
 fi
+
+if [ "$_have_zink" ]; then
+	_gallium_drivers+=",zink"
+	makedepends+=" vulkan-loader"
+fi
+
+configure_args+=" ${_gallium_drivers}"
 
 # must be the last one for proper order
 subpackages+=" mesa-dri MesaLib-devel"
@@ -344,9 +362,10 @@ mesa-vulkan-radeon_package() {
 mesa-vulkan-overlay-layer_package() {
 	short_desc="Vulkan layer to display information about the running application"
 	pkg_install() {
-		vmove usr/bin/mesa-overlay-control.py
-		vmove usr/lib/libVkLayer_MESA_overlay.so
-		vmove usr/share/vulkan/explicit_layer.d/VkLayer_MESA_overlay.json
+		vmove "usr/share/vulkan/explicit_layer.d/VkLayer_*.json"
+		vmove "usr/share/vulkan/implicit_layer.d/VkLayer_*.json"
+		vmove "usr/bin/mesa-overlay-control.py"
+		vmove "usr/lib/libVkLayer_*.so"
 	}
 }
 

@@ -1,8 +1,8 @@
 # Template file for 'ardour'
 pkgname=ardour
-version=6.6
+version=6.9
 revision=1
-_commit="e4e21f4d073ab00b1a0bb6ff6ca49f28b02fd68a"
+_commit="945c8f288077565fe3de32c6ac0cb50e286722e4"
 build_style=waf3
 configure_args="--cxx11 --no-phone-home --with-backends=jack,alsa,dummy
  --libjack=weak --optimize --docs --use-external-libs --freedesktop"
@@ -18,6 +18,8 @@ short_desc="Professional-grade digital audio workstation"
 maintainer="tibequadorian <tibequadorian@posteo.de>"
 license="GPL-2.0-or-later"
 homepage="http://ardour.org"
+
+CXXFLAGS="-fpermissive"
 
 case "$XBPS_TARGET_MACHINE" in
 	x86_64*)  configure_args+=" --dist-target=x86_64" ;;
@@ -38,13 +40,5 @@ do_fetch() {
 }
 
 post_install() {
-	vinstall build/gtk2_ardour/ardour.xml 644 usr/share/mime/packages
-	vinstall "build/gtk2_ardour/ardour${version%%.*}.desktop" \
-		644 usr/share/applications
-	for size in 16 22 32 48 256 512; do
-		vinstall gtk2_ardour/resources/Ardour-icon_${size}px.png 644 \
-			usr/share/icons/hicolor/${size}x${size}/apps \
-			ardour${version%%.*}.png
-	done
 	vman ardour.1
 }

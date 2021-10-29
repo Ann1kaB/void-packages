@@ -1,9 +1,8 @@
 # Template file for 'kxmlrpcclient'
 pkgname=kxmlrpcclient
-version=5.81.0
+version=5.87.0
 revision=1
 build_style=cmake
-configure_args="-DBUILD_TESTING=OFF"
 hostmakedepends="kcoreaddons extra-cmake-modules gettext
  qt5-host-tools qt5-qmake python3"
 makedepends="kio-devel"
@@ -12,7 +11,7 @@ maintainer="John <me@johnnynator.dev>"
 license="LGPL-2.1-or-later, BSD-2-Clause"
 homepage="https://invent.kde.org/frameworks/kxmlrpcclient"
 distfiles="${KDE_SITE}/frameworks/${version%.*}/portingAids/${pkgname}-${version}.tar.xz"
-checksum=0f8e5a6b331e306292763fa573e832a62e1c0ace911051b687d617dbb8e10397
+checksum=a7298f56d5b3997b3765116ec1e3f09e315b21ca004c0d03e0c3894289fe850e
 
 post_install() {
 	vlicense LICENSES/BSD-2-Clause.txt

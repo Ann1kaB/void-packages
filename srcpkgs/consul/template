@@ -1,10 +1,10 @@
 # Template file for 'consul'
 pkgname=consul
-version=1.8.4
+version=1.10.1
 revision=1
 build_style=go
 go_import_path="github.com/hashicorp/consul"
-_git_commit=9ea1a204d832cfd4d8c5cba9df56876a526a4531
+_git_commit=db839f18ba4796df77601bfe9873756ed340525d
 go_ldflags="-X ${go_import_path}/version.GitCommit=${_git_commit} -X ${go_import_path}/version.GitDescribe=v${version}"
 # consul has a vendor directory, but relies on replace statements in go.mod, so
 # force default non-vendor behavior.
@@ -15,7 +15,7 @@ maintainer="iaroki <iaroki@protonmail.com>"
 license="MPL-2.0"
 homepage="https://www.consul.io/"
 distfiles="https://${go_import_path}/archive/v${version}.tar.gz"
-checksum=77d1dfa93da66ccb222049bd892e46f8ddb11516589311fbdc24bd658d64b372
+checksum=c840ba7b52df3ec6105a7febe900e52dde504a33bd1fa4e2e1985a88b6072d41
 
 post_install() {
 	vlicense LICENSE

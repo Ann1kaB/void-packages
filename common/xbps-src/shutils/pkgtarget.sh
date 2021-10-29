@@ -1,5 +1,18 @@
 # vim: set ts=4 sw=4 et:
 
+check_existing_pkg() {
+    local arch= curpkg=
+    if [ -z "$XBPS_PRESERVE_PKGS" ] || [ "$XBPS_BUILD_FORCEMODE" ]; then
+        return
+    fi
+    arch=$XBPS_TARGET_MACHINE
+    curpkg=$XBPS_REPOSITORY/$repository/$pkgver.$arch.xbps
+    if [ -e $curpkg ]; then
+        msg_warn "$pkgver: skipping build due to existing $curpkg\n"
+        exit 0
+    fi
+}
+
 check_pkg_arch() {
     local cross="$1" _arch f match nonegation
 
@@ -79,7 +92,7 @@ remove_pkg_autodeps() {
 remove_pkg_wrksrc() {
     if [ -d "$wrksrc" ]; then
         msg_normal "$pkgver: cleaning build directory...\n"
-        chmod -R +wX "$wrksrc" # Needed to delete Go Modules
+        rm -rf "$wrksrc" 2>/dev/null || chmod -R +wX "$wrksrc" # Needed to delete Go Modules
         rm -rf "$wrksrc"
     fi
 }

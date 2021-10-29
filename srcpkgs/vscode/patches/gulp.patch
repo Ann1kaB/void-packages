@@ -1,8 +1,8 @@
 diff --git a/build/gulpfile.vscode.js b/build/gulpfile.vscode.js
-index a06f3f63d89..7bdca3af3fb 100644
+index ad0e4717a66..d3c34a95ec9 100644
 --- a/build/gulpfile.vscode.js
 +++ b/build/gulpfile.vscode.js
-@@ -273,7 +273,15 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
+@@ -281,7 +281,15 @@ function packageTask(platform, arch, sourceFolderName, destinationFolderName, op
  				'resources/win32/code_150x150.png'
  			], { base: '.' }));
  		} else if (platform === 'linux') {

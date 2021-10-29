@@ -1,9 +1,8 @@
 # Template file for 'kconfig'
 pkgname=kconfig
-version=5.81.0
+version=5.87.0
 revision=1
 build_style=cmake
-configure_args="-DBUILD_TESTING=OFF"
 hostmakedepends="kcoreaddons extra-cmake-modules qt5-host-tools qt5-tools-devel"
 makedepends="qt5-devel qt5-tools-devel"
 short_desc="KDE Persistent platform-independent application settings"
@@ -11,7 +10,13 @@ maintainer="John <me@johnnynator.dev>"
 license="LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-or-later"
 homepage="https://invent.kde.org/frameworks/kconfig"
 distfiles="${KDE_SITE}/frameworks/${version%.*}/${pkgname}-${version}.tar.xz"
-checksum=1ddf9e384140ce72bbd555eb36a76d0db1a256391429b02b51769c08ebf0ae8f
+checksum=345bf5a68de968c3301aec16e1ec6eebd1c575a891464784aa0e177771e917d1
+
+do_check() {
+	cd build
+	# some problems with locale
+	ctest -E 'kconfigcore-kconfigtest'
+}
 
 kconfig-devel_package() {
 	short_desc+=" - development"

@@ -1,9 +1,8 @@
 # Template file for 'kcodecs'
 pkgname=kcodecs
-version=5.81.0
+version=5.87.0
 revision=1
 build_style=cmake
-configure_args="-DBUILD_TESTING=OFF"
 hostmakedepends="kcoreaddons extra-cmake-modules qt5-host-tools qt5-tools-devel gperf"
 makedepends="qt5-devel qt5-tools-devel"
 short_desc="A collection of methods to manipulate strings using various encodings"
@@ -11,7 +10,7 @@ maintainer="John <me@johnnynator.dev>"
 license="LGPL-2.0-only, LGPL-2.0-or-later"
 homepage="https://invent.kde.org/frameworks/kcodecs"
 distfiles="${KDE_SITE}/frameworks/${version%.*}/${pkgname}-${version}.tar.xz"
-checksum=4392afb4a3e1a4c8d6e645e7161d2651f5b83ca8620156cf942bfc95c33ce564
+checksum=0752156e85320731776f727ff171b2308e0f0c511efc4f2158dd763ed75368b9
 
 kcodecs-devel_package() {
 	depends="${makedepends} ${sourcepkg}>=${version}_${revision}"

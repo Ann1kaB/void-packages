@@ -1,6 +1,6 @@
 # Template file for 'clojure'
 pkgname=clojure
-version=1.10.3.814
+version=1.10.3.967
 revision=1
 wrksrc="clojure-tools"
 depends="virtual?java-environment rlwrap"
@@ -9,14 +9,15 @@ maintainer="Dominic Monroe <monroef4@googlemail.com>"
 license="EPL-1.0"
 homepage="https://clojure.org/"
 distfiles="https://download.clojure.org/install/clojure-tools-${version}.tar.gz"
-checksum=fa3a6786e28fbf128903cc43a3d1a244aa4525d3d84494ecb2666d69f69d127e
+checksum=bba6952e164cd3d449794e226145c1a1b1725cca5dd8a7446b35926ea7235702
 
 do_install() {
 	vmkdir /usr/lib/clojure
 	vmkdir /usr/lib/clojure/libexec
-	vcopy "deps.edn example-deps.edn" /usr/lib/clojure
+	vcopy "deps.edn example-deps.edn tools.edn" /usr/lib/clojure
 	vcopy exec.jar /usr/lib/clojure/libexec/
 	vcopy clojure-tools-${version}.jar /usr/lib/clojure/libexec/
+	sed -i -e 's@BINDIR@/usr/bin@g' clj
 	sed -i -e 's@PREFIX@/usr/lib/clojure@g' clojure
 	vbin clojure
 	vbin clj

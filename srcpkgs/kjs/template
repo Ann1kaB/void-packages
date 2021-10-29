@@ -1,9 +1,8 @@
 # Template file for 'kjs'
 pkgname=kjs
-version=5.81.0
+version=5.87.0
 revision=1
 build_style=cmake
-configure_args="-DBUILD_TESTING=OFF"
 hostmakedepends="kcoreaddons extra-cmake-modules perl pkg-config"
 makedepends="qt5-devel qt5-script-devel qt5-declarative-devel kdoctools-devel"
 short_desc="KDE Javascript engine"
@@ -11,7 +10,7 @@ maintainer="John <me@johnnynator.dev>"
 license="LGPL-2.0-or-later"
 homepage="https://invent.kde.org/frameworks/kjs"
 distfiles="${KDE_SITE}/frameworks/${version%.*}/portingAids/${pkgname}-${version}.tar.xz"
-checksum=b9a71c912448bf24083a6b7fb509ec5fa904b2838e02ae38d49dda702bbd2a11
+checksum=e879d3f1df4facb42abc87c0fa5a8958d4ea63962d2ff19caf56cc319f841cc6
 
 if [ "$CROSS_BUILD" ]; then
 	hostmakedepends+=" qt5-host-tools qt5-qmake kdoctools kjs"

@@ -1,10 +1,10 @@
 # Template file for 'Rocket.Chat-Desktop'
 pkgname=Rocket.Chat-Desktop
-version=3.1.1
+version=3.5.6
 revision=1
-_electron_ver=10
+_electron_ver=13
 wrksrc="Rocket.Chat.Electron-${version}"
-hostmakedepends="yarn nodejs-lts python3 pkg-config app-builder"
+hostmakedepends="yarn nodejs python3 pkg-config app-builder"
 makedepends="electron${_electron_ver} libvips-devel"
 depends="electron${_electron_ver}"
 short_desc="Rocket.Chat Native Cross-Platform Desktop Application via Electron"
@@ -12,7 +12,7 @@ maintainer="John <me@johnnynator.dev>"
 license="MIT"
 homepage="https://rocket.chat/"
 distfiles="https://github.com/RocketChat/Rocket.Chat.Electron/archive/${version}.tar.gz"
-checksum=ba0f4ebee4119987ab45a304b9ee3bfc8ce14159dd9cd3dca095020e1eae8a3e
+checksum=e123c3d3bf70972f58c050a381471f3acec0b0b224a8b35900db073233024ccc
 
 export USE_SYSTEM_APP_BUILDER=true
 
