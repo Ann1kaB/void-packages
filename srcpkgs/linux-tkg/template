@@ -20,10 +20,7 @@ wrksrc=linux-tkg
 _where="${XBPS_BUILDDIR}/${wrksrc}/linux-tkg"
 srcdir="${XBPS_BUILDDIR}/${wrksrc}"
 _files="${XBPS_SRCPKGDIR}/linux-tkg/files"
-#if [[ "$_sub" = rc* ]]; then
-  _userpatch_dir="${_where}/linux${_basever}-tkg-userpatches"
-#else
-#  _userpatch_dir="${_where}/linux${_basekernel}-tkg-userpatches"
+_userpatch_dir="${_where}/linux${_basever}-tkg-userpatches"
 
 if [ ! -e ${srcdir} ]; then
 	mkdir ${srcdir}
@@ -36,7 +33,7 @@ fi
 
 source ${_files}/customization.cfg
 source ${_where}/linux-tkg-config/prepare
-#source ${_files}/prepare
+source ${_where}/BIG_UGLY_FROGMINER
 
 if [ ! -e ${srcdir}/run_check ]; then
   _tkg_initscript
@@ -56,19 +53,16 @@ if [ ! -e ${srcdir}/run_check ]; then
   echo "_compiler_opt=\"$_compileropt\"" >> "${srcdir}/compilerset"
 fi
 touch ${srcdir}/run_check
-source ${srcdir}/cpuschedset
-source ${srcdir}/compilerset
-source ${srcdir}/versel
 source ${srcdir}/path
 # Template file for 'linux${_basever}-tkg-${_cpusched}${_compiler_name}'
 pkgname=linux${_basever}-tkg-${_cpusched}${_compiler_name}
 pkgdesc="Linux-tkg"
-revision=20
+revision=21
 archs="x86_64" # PKGBUILD declares x86_64 only
 python_version=3
 patch_args="-Np1"
 hostmakedepends="schedtool xmlto openssl-devel docbook-xsl kmod inetutils bc libelf patchutils flex python3-Sphinx python3-sphinx_rtd_theme graphviz perl uboot-mkimage cpio gmp-devel libmpc-devel elfutils-devel pahole git zstd tar"
-makedepends="xz modprobed-db"
+makedepends="xz modprobed-db wget"
 triggers="kernel-hooks"
 
 if [[ "$_sub" = rc* ]]; then
@@ -102,379 +96,53 @@ homepage="https://github.com/Frogging-Family/linux-tkg/tree/master"
 
 case $_basever in
         54)
-	opt_ver="4.19-v5.4"
+	opt_ver="4.19-5.4"
 	cpu_opt_sum='27b7fc535ade94b636c3ec4e809e141831e9465a0ef55215a9852b87048629e2'
 	kernel_sum='21626132658dc34cb41b7aa7b80ecf83751890a71ac1a63d77aea9d488271a03'
-        source=('config.x86_64' # stock Arch config
-                'config_hardened.x86_64' # hardened Arch config
-                90-cleanup.hook
-                cleanup
-                # ARCH Patches
-                0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
-                # TkG
-                0002-clear-patches.patch
-                0003-glitched-base.patch
-                0003-glitched-cfs.patch
-                0004-glitched-ondemand-muqss.patch
-                0004-glitched-muqss.patch
-                0004-5.4-ck1.patch
-                0005-glitched-ondemand-pds.patch
-                0005-glitched-pds.patch
-                0005-v5.4_undead-pds099o.patch
-                0006-add-acs-overrides_iommu.patch
-                0007-v5.4-fsync.patch
-                #0008-5.4-bcachefs.patch
-                0009-glitched-bmq.patch
-                0009-bmq_v5.4-r2.patch
-                0011-ZFS-fix.patch
-                0012-linux-hardened.patch
-        )
-        sha256sums=('be2066dd6133357007e8c7da9d5de3194b13409ebbfba8821db1849588fced1e'
-            '1f4a20d6eaaa0d969af93152a65191492400c6aa838fc1c290b0dd29bb6019d8'
-            '1e15fc2ef3fa770217ecc63a220e5df2ddbcf3295eb4a021171e7edd4c6cc898'
-            '66a03c246037451a77b4d448565b1d7e9368270c7d02872fbd0b5d024ed0a997'
-            '31dc68e84aecfb7d069efb1305049122c65694676be8b955634abcf0675922a2'
-            'd02bf5ca08fd610394b9d3a0c3b176d74af206f897dee826e5cbaec97bb4a4aa'
-            '3ef74dd80dc8c4323803cbf868178cf01d8ed69f09fe2f537ff91124cbd6e611'
-            '7058e57fd68367b029adc77f2a82928f1433daaf02c8c279cb2d13556c8804d7'
-            'c605f638d74c61861ebdc36ebd4cb8b6475eae2f6273e1ccb2bbb3e10a2ec3fe'
-            'bc69d6e5ee8172b0242c8fa72d13cfe2b8d2b6601468836908a7dfe8b78a3bbb'
-            '815974c65f47301d2a5d1577bf95e8a4b54cad7d77f226e0065f83e763837c48'
-            '62496f9ca788996181ef145f96ad26291282fcc3fb95cdc04080dcf84365be33'
-            'eac7e5d6201528e64f4bdf5e286c842511e1afc52e1518dc8e7d11932bbe0a99'
-            'db03fbd179ec78941eefe1c0edde4c19071bc603511d0b5c06c04e412994b62e'
-            '19661ec0d39f9663452b34433214c755179894528bf73a42f6ba52ccf572832a'
-            '2d9260b80b43bbd605cf420d6bd53aa7262103dfd77196ba590ece5600b6dc0d'
-            '3832f828a9f402b153fc9a6829c5a4eaf6091804bcda3a0423c8e1b57e26420d'
-            '6a6a736cf1b3513d108bfd36f60baf50bb36b33aec21ab0d0ffad13602b7ff75'
-            '49262ce4a8089fa70275aad742fc914baa28d9c384f710c9a62f64796d13e104'
-            'aeb31404c26ee898d007b1f66cb9572c9884ad8eca14edc4587d68f6cba6de46')
         ;;
         57)
         opt_ver="5.7+"
 	cpu_opt_sum='1f56a2466bd9b4477925682d8f944fabb38727140e246733214fe50aa326fc47'
 	kernel_sum='419c6248b9ae4dfead4599787aecbfd202e88bc4124523adfa6dd2d642b99fe7'
-        source=('config.x86_64' # stock Arch config
-                'config_hardened.x86_64' # hardened Arch config
-                90-cleanup.hook
-                cleanup
-                # ARCH Patches
-                0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
-                # TkG
-                0002-clear-patches.patch
-                0003-glitched-base.patch
-                0003-glitched-cfs.patch
-                0004-glitched-ondemand-muqss.patch
-                0004-glitched-muqss.patch
-                0004-5.7-ck1.patch
-                0005-glitched-ondemand-pds.patch
-                0005-glitched-pds.patch
-                0005-v5.7_undead-pds099o.patch
-                0006-add-acs-overrides_iommu.patch
-                0007-v5.7-fsync.patch
-                0008-5.7-bcachefs.patch
-                0009-glitched-ondemand-bmq.patch
-                0009-glitched-bmq.patch
-                0009-prjc_v5.7-r3.patch
-                0011-ZFS-fix.patch
-                0012-linux-hardened.patch
-                #0012-misc-additions.patch
-        )
-        sha256sums=('6313ccad7f8e4d8ce09dd5bdb51b8dfa124d0034d7097ba47008380a14a84f09'
-            '15ce09447b7e9b28425c1df5961c955378f2829e4115037337eef347b1db3d9d'
-            '1e15fc2ef3fa770217ecc63a220e5df2ddbcf3295eb4a021171e7edd4c6cc898'
-            '66a03c246037451a77b4d448565b1d7e9368270c7d02872fbd0b5d024ed0a997'
-            '31dc68e84aecfb7d069efb1305049122c65694676be8b955634abcf0675922a2'
-            'd02bf5ca08fd610394b9d3a0c3b176d74af206f897dee826e5cbaec97bb4a4aa'
-            'bbf332201423888257c9687bee06916a5dbbac2194f9df5b4126100c40e48d16'
-            '7058e57fd68367b029adc77f2a82928f1433daaf02c8c279cb2d13556c8804d7'
-            'c605f638d74c61861ebdc36ebd4cb8b6475eae2f6273e1ccb2bbb3e10a2ec3fe'
-            'bc69d6e5ee8172b0242c8fa72d13cfe2b8d2b6601468836908a7dfe8b78a3bbb'
-            '8d8aec86e34dbec6cc3a47f2cd55dc9212e95d36b6cd34d6e637c66731e7d838'
-            '62496f9ca788996181ef145f96ad26291282fcc3fb95cdc04080dcf84365be33'
-            '7fd8e776209dac98627453fda754bdf9aff4a09f27cb0b3766d7983612eb3c74'
-            '55be5e4c6254da0a9d34bbfac807a70d8b58b3f7b2ec852026195c4db5e263e2'
-            '19661ec0d39f9663452b34433214c755179894528bf73a42f6ba52ccf572832a'
-            'cd225e86d72eaf6c31ef3d7b20df397f4cc44ddd04389850691292cdf292b204'
-            'd2214504c43f9d297a8ef68dffc198143bfebf85614b71637a71978d7a86bd78'
-            '9fad4a40449e09522899955762c8928ae17f4cdaa16e01239fd12592e9d58177'
-            '965a517a283f265a012545fbb5cc9e516efc9f6166d2aa1baf7293a32a1086b7'
-            'b2a2ae866fc3f1093f67e69ba59738827e336b8f800fb0487599127f7f3ef881'
-            '49262ce4a8089fa70275aad742fc914baa28d9c384f710c9a62f64796d13e104'
-            '6821f92bd2bde3a3938d17b070d70f18a2f33cae81647567b5a4d94c9cd75f3d')
         ;;
         58)
-        opt_ver="5.8+"
-	cpu_opt_sum='9083b94bf9f547cceeed9fe2f37fb201e42d5b00734a86e4ea528447a59d4b9a'
+        opt_ver="5.8-5.14"
+	cpu_opt_sum='2f99d9e37f372925e054115bfead4723a328ffbdb7bf958753aab2ac48dc5673'
 	kernel_sum='4ab4a3f694b7b4cfbe78871eab34c8039ad33692144c45c669827a594da85534'
-        source=(config.x86_64 # stock Arch config
-                #config_hardened.x86_64 # hardened Arch config
-                90-cleanup.hook
-                cleanup
-                # ARCH Patches
-                0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
-                # TkG
-                0002-clear-patches.patch
-                0003-glitched-base.patch
-                0003-glitched-cfs.patch
-                #0004-glitched-ondemand-muqss.patch
-                #0004-glitched-muqss.patch
-                #0004-5.8-ck1.patch
-                0005-undead-glitched-ondemand-pds.patch
-                0005-undead-glitched-pds.patch
-                0005-v5.8_undead-pds099o.patch
-                0005-glitched-pds.patch
-                0006-add-acs-overrides_iommu.patch
-                0007-v5.8-fsync.patch
-                0008-5.8-bcachefs.patch
-                0009-glitched-ondemand-bmq.patch
-                0009-glitched-bmq.patch
-                0009-prjc_v5.8-r3.patch
-                0011-ZFS-fix.patch
-                #0012-linux-hardened.patch
-                0012-misc-additions.patch
-        )
-        sha256sums=('ac66686b0e1ed057ea5f099cd00366decc00f999aa1cb19ba8d3ccf9f92d60e2'
-            '1e15fc2ef3fa770217ecc63a220e5df2ddbcf3295eb4a021171e7edd4c6cc898'
-            '66a03c246037451a77b4d448565b1d7e9368270c7d02872fbd0b5d024ed0a997'
-            'f6383abef027fd9a430fd33415355e0df492cdc3c90e9938bf2d98f4f63b32e6'
-            '35a7cde86fb94939c0f25a62b8c47f3de0dbd3c65f876f460b263181b3e92fc0'
-            'b9ebe0ae69bc2b2091d6bfcf6c7875a87ea7969fcfa4e306c48d47a60f9ef4d6'
-            '7058e57fd68367b029adc77f2a82928f1433daaf02c8c279cb2d13556c8804d7'
-            '62496f9ca788996181ef145f96ad26291282fcc3fb95cdc04080dcf84365be33'
-            '7fd8e776209dac98627453fda754bdf9aff4a09f27cb0b3766d7983612eb3c74'
-            '31b172eb6a0c635a8d64cc1c2e8181d9f928ee991bd44f6e556d1713b815f8d9'
-            '87bca363416655bc865fcb2cc0d1532cb010a61d9b9f625e3c15cd12eeee3a59'
-            '19661ec0d39f9663452b34433214c755179894528bf73a42f6ba52ccf572832a'
-            'cd225e86d72eaf6c31ef3d7b20df397f4cc44ddd04389850691292cdf292b204'
-            'e73c3a8a040a35eb48d1e0ce4f66dd6e6f69fd10ee5b1acf3a0334cbf7ffb0c4'
-            '9fad4a40449e09522899955762c8928ae17f4cdaa16e01239fd12592e9d58177'
-            '965a517a283f265a012545fbb5cc9e516efc9f6166d2aa1baf7293a32a1086b7'
-            'f5dbff4833a2e3ca94c202e5197894d5f1006c689ff149355353e77d2e17c943'
-            '49262ce4a8089fa70275aad742fc914baa28d9c384f710c9a62f64796d13e104'
-            '98311deeb474b39e821cd1e64198793d5c4d797155b3b8bbcb1938b7f11e8d74')
-
         ;;
         59)
-        opt_ver="5.8+"
-	cpu_opt_sum='9083b94bf9f547cceeed9fe2f37fb201e42d5b00734a86e4ea528447a59d4b9a'
+        opt_ver="5.8-5.14"
+	cpu_opt_sum='2f99d9e37f372925e054115bfead4723a328ffbdb7bf958753aab2ac48dc5673'
 	kernel_sum='b0d7abae88e5f91893627c645e680a95c818defd1b4fcaf3e2afb4b2b6b4ab86'
-        source=("config.x86_64" # stock Arch config
-                #$hardened_config_file # hardened Arch config
-                90-cleanup.hook
-                cleanup
-                # ARCH Patches
-                0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
-                # TkG
-                0002-clear-patches.patch
-                0003-glitched-base.patch
-                0003-glitched-cfs.patch
-                0004-glitched-ondemand-muqss.patch
-                0004-glitched-muqss.patch
-                0004-5.9-ck1.patch
-                0005-undead-glitched-ondemand-pds.patch
-                0005-undead-glitched-pds.patch
-                0005-v5.9_undead-pds099o.patch
-                0005-glitched-pds.patch
-                0006-add-acs-overrides_iommu.patch
-                0007-v5.9-fsync.patch
-                0008-5.9-bcachefs.patch
-                0009-glitched-ondemand-bmq.patch
-                0009-glitched-bmq.patch
-                0009-prjc_v5.9-r3.patch
-                0011-ZFS-fix.patch
-                #0012-linux-hardened.patch
-                0012-misc-additions.patch
-        )
-        sha256sums=('958333f18de79c19ccf9eccb4e16e2a217a0619a1d96c2c65ccba23628815bab'
-            '1e15fc2ef3fa770217ecc63a220e5df2ddbcf3295eb4a021171e7edd4c6cc898'
-            '66a03c246037451a77b4d448565b1d7e9368270c7d02872fbd0b5d024ed0a997'
-            'f6383abef027fd9a430fd33415355e0df492cdc3c90e9938bf2d98f4f63b32e6'
-            '35a7cde86fb94939c0f25a62b8c47f3de0dbd3c65f876f460b263181b3e92fc0'
-            '902885088ed0748e40372e04a8ec11adf5acf3d935abffc6737dd9e6ec13bb93'
-            '7058e57fd68367b029adc77f2a82928f1433daaf02c8c279cb2d13556c8804d7'
-            'c605f638d74c61861ebdc36ebd4cb8b6475eae2f6273e1ccb2bbb3e10a2ec3fe'
-            '2bbbac963b6ca44ef3f8a71ec7c5cad7d66df860869a73059087ee236775970a'
-            '45a9ab99215ab3313be6e66e073d29154aac55bc58975a4df2dad116c918d27c'
-            '62496f9ca788996181ef145f96ad26291282fcc3fb95cdc04080dcf84365be33'
-            '31b428c464905e44ed61cdcd1f42b4ec157ebe5a44cb5b608c4c99b466df66ba'
-            'f9f5f0a3a1d6c5233b9d7a4afe8ed99be97c4ff00a80bde4017d117c7d5f98ed'
-            'fca63d15ca4502aebd73e76d7499b243d2c03db71ff5ab0bf5cf268b2e576320'
-            '19661ec0d39f9663452b34433214c755179894528bf73a42f6ba52ccf572832a'
-            'b302ba6c5bbe8ed19b20207505d513208fae1e678cf4d8e7ac0b154e5fe3f456'
-            '14a261f1940a2b21b6b14df7391fc2c6274694bcfabfac3d0e985a67285dbfe7'
-            '9fad4a40449e09522899955762c8928ae17f4cdaa16e01239fd12592e9d58177'
-            'a557b342111849a5f920bbe1c129f3ff1fc1eff62c6bd6685e0972fc88e39911'
-            '0d5fe3a9050536fe431564b221badb85af7ff57b330e3978ae90d21989fcad2d'
-            '49262ce4a8089fa70275aad742fc914baa28d9c384f710c9a62f64796d13e104'
-            '433b919e6a0be26784fb4304c43b1811a28f12ad3de9e26c0af827f64c0c316e')
-
         ;;
         510)
-        opt_ver="5.8+"
-	cpu_opt_sum='9083b94bf9f547cceeed9fe2f37fb201e42d5b00734a86e4ea528447a59d4b9a'
+        opt_ver="5.8-5.14"
+	cpu_opt_sum='2f99d9e37f372925e054115bfead4723a328ffbdb7bf958753aab2ac48dc5673'
 	kernel_sum='158c6746c11a90645b4d40bdb5c049d9fac7e4c9ed381c9b7aa94db1a8e7e9ec'
-        source=("config.x86_64" # stock Arch config
-                #$hardened_config_file # hardened Arch config
-                90-cleanup.hook
-                cleanup
-                # ARCH Patches
-                0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
-                # TkG
-                0002-clear-patches.patch
-                0003-glitched-base.patch
-                0003-glitched-cfs.patch
-                0004-glitched-ondemand-muqss.patch
-                0004-glitched-muqss.patch
-                0004-5.10-ck1.patch
-                0005-undead-glitched-ondemand-pds.patch
-                0005-undead-glitched-pds.patch
-                0005-v5.10_undead-pds099o.patch
-                0005-glitched-pds.patch
-                0006-add-acs-overrides_iommu.patch
-                0007-v5.10-fsync.patch
-                #0008-5.10-bcachefs.patch
-                0009-glitched-ondemand-bmq.patch
-                0009-glitched-bmq.patch
-                0009-prjc_v5.10-r2.patch
-                0011-ZFS-fix.patch
-                #0012-linux-hardened.patch
-                0012-misc-additions.patch
-        )
-        sha256sums=('4720ffe4c063ec948918cadf7498e96be8a035717e587b4c949d3c2a4471d5d9'
-            '1e15fc2ef3fa770217ecc63a220e5df2ddbcf3295eb4a021171e7edd4c6cc898'
-            '66a03c246037451a77b4d448565b1d7e9368270c7d02872fbd0b5d024ed0a997'
-            'f6383abef027fd9a430fd33415355e0df492cdc3c90e9938bf2d98f4f63b32e6'
-            '35a7cde86fb94939c0f25a62b8c47f3de0dbd3c65f876f460b263181b3e92fc0'
-            '1ac97da07e72ec7e2b0923d32daacacfaa632a44c714d6942d9f143fe239e1b5'
-            '7058e57fd68367b029adc77f2a82928f1433daaf02c8c279cb2d13556c8804d7'
-            'c605f638d74c61861ebdc36ebd4cb8b6475eae2f6273e1ccb2bbb3e10a2ec3fe'
-            '2bbbac963b6ca44ef3f8a71ec7c5cad7d66df860869a73059087ee236775970a'
-            'e00096244e5cddaa5500d08b5f692fd3f25be9401dfa3b0fc624625ff2f5e198'
-            '62496f9ca788996181ef145f96ad26291282fcc3fb95cdc04080dcf84365be33'
-            '31b428c464905e44ed61cdcd1f42b4ec157ebe5a44cb5b608c4c99b466df66ba'
-            '06e93b57b7a0b96aefc2c0ec12c3be28c6e8dc8506fa8a22c5a2313814a3c7f3'
-            'fca63d15ca4502aebd73e76d7499b243d2c03db71ff5ab0bf5cf268b2e576320'
-            '19661ec0d39f9663452b34433214c755179894528bf73a42f6ba52ccf572832a'
-            'b302ba6c5bbe8ed19b20207505d513208fae1e678cf4d8e7ac0b154e5fe3f456'
-            '9fad4a40449e09522899955762c8928ae17f4cdaa16e01239fd12592e9d58177'
-            'a557b342111849a5f920bbe1c129f3ff1fc1eff62c6bd6685e0972fc88e39911'
-            'e308292fc42840a2366280ea7cf26314e92b931bb11f04ad4830276fc0326ee1'
-            '49262ce4a8089fa70275aad742fc914baa28d9c384f710c9a62f64796d13e104'
-            '7fb1104c167edb79ec8fbdcde97940ed0f806aa978bdd14d0c665a1d76d25c24')
        ;;
         511)
-        opt_ver="5.8+"
-	cpu_opt_sum='9083b94bf9f547cceeed9fe2f37fb201e42d5b00734a86e4ea528447a59d4b9a'
+        opt_ver="5.8-5.14"
+	cpu_opt_sum='2f99d9e37f372925e054115bfead4723a328ffbdb7bf958753aab2ac48dc5673'
 	kernel_sum='fa61193d24f2cdb1290158299f7041a7bc41090ec536af0d78a4d5ea029b6f7b'
-        source=("config.x86_64" # stock Arch config
-                #$hardened_config_file # hardened Arch config
-                90-cleanup.hook
-                cleanup
-                # ARCH Patches
-                0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
-                # TkG
-                0002-clear-patches.patch
-                0003-glitched-base.patch
-                0003-glitched-cfs.patch
-                #0004-glitched-ondemand-muqss.patch
-                #0004-glitched-muqss.patch
-                #0004-5.11-ck1.patch
-                #0005-undead-glitched-ondemand-pds.patch
-                #0005-undead-glitched-pds.patch
-                #0005-v5.11_undead-pds099o.patch
-                #0005-glitched-pds.patch
-                0006-add-acs-overrides_iommu.patch
-                0007-v5.11-fsync.patch
-                #0008-5.10-bcachefs.patch
-                #0009-glitched-ondemand-bmq.patch
-                #0009-glitched-bmq.patch
-                #0009-prjc_v5.10-r0.patch
-                0011-ZFS-fix.patch
-                #0012-linux-hardened.patch
-                #0012-misc-additions.patch
-        )
-        sha256sums=('4e4340b66ee899c3459c39e6481d4aaf3078f113fe50ccea4afb42ec9b53d58d'
-            '1e15fc2ef3fa770217ecc63a220e5df2ddbcf3295eb4a021171e7edd4c6cc898'
-            '66a03c246037451a77b4d448565b1d7e9368270c7d02872fbd0b5d024ed0a997'
-            'f6383abef027fd9a430fd33415355e0df492cdc3c90e9938bf2d98f4f63b32e6'
-            '35a7cde86fb94939c0f25a62b8c47f3de0dbd3c65f876f460b263181b3e92fc0'
-            '1ac97da07e72ec7e2b0923d32daacacfaa632a44c714d6942d9f143fe239e1b5'
-            '7058e57fd68367b029adc77f2a82928f1433daaf02c8c279cb2d13556c8804d7'
-            '19661ec0d39f9663452b34433214c755179894528bf73a42f6ba52ccf572832a'
-	    'b302ba6c5bbe8ed19b20207505d513208fae1e678cf4d8e7ac0b154e5fe3f456'
-            '49262ce4a8089fa70275aad742fc914baa28d9c384f710c9a62f64796d13e104'
-            '433b919e6a0be26784fb4304c43b1811a28f12ad3de9e26c0af827f64c0c316e')
        ;;
         512)
-        opt_ver="5.8+"
-	cpu_opt_sum='9083b94bf9f547cceeed9fe2f37fb201e42d5b00734a86e4ea528447a59d4b9a'
+        opt_ver="5.8-5.14"
+	cpu_opt_sum='2f99d9e37f372925e054115bfead4723a328ffbdb7bf958753aab2ac48dc5673'
 	kernel_sum='5acdd08104a3e1c332ef708a6b0c39f579d5e930ff4ab0e2e90bfcb886f39e31'
-        source=("config.x86_64" # stock Arch config
-                #$hardened_config_file # hardened Arch config
-                90-cleanup.hook
-                cleanup
-                # ARCH Patches
-                0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
-                # TkG
-                0002-clear-patches.patch
-                0003-glitched-base.patch
-                0003-glitched-cfs.patch
-                #0004-glitched-ondemand-muqss.patch
-                #0004-glitched-muqss.patch
-                #0004-5.11-ck1.patch
-                #0005-undead-glitched-ondemand-pds.patch
-                #0005-undead-glitched-pds.patch
-                #0005-v5.11_undead-pds099o.patch
-                #0005-glitched-pds.patch
-                0006-add-acs-overrides_iommu.patch
-                0007-v5.12-fsync.patch
-                #0008-5.10-bcachefs.patch
-                #0009-glitched-ondemand-bmq.patch
-                #0009-glitched-bmq.patch
-                #0009-prjc_v5.10-r0.patch
-                #0011-ZFS-fix.patch
-                #0012-linux-hardened.patch
-                #0012-misc-additions.patch
-        )
-        sha256sums=('84e8ad516fad66514ea6b430345b261118f571c93b0c7358d1bc3291ced11c82'
-            '1e15fc2ef3fa770217ecc63a220e5df2ddbcf3295eb4a021171e7edd4c6cc898'
-            '66a03c246037451a77b4d448565b1d7e9368270c7d02872fbd0b5d024ed0a997'
-            'f6383abef027fd9a430fd33415355e0df492cdc3c90e9938bf2d98f4f63b32e6'
-            '35a7cde86fb94939c0f25a62b8c47f3de0dbd3c65f876f460b263181b3e92fc0'
-            '1ac97da07e72ec7e2b0923d32daacacfaa632a44c714d6942d9f143fe239e1b5'
-            '7058e57fd68367b029adc77f2a82928f1433daaf02c8c279cb2d13556c8804d7'
-            '19661ec0d39f9663452b34433214c755179894528bf73a42f6ba52ccf572832a'
-	    'b302ba6c5bbe8ed19b20207505d513208fae1e678cf4d8e7ac0b154e5fe3f456'
-            '49262ce4a8089fa70275aad742fc914baa28d9c384f710c9a62f64796d13e104'
-            '433b919e6a0be26784fb4304c43b1811a28f12ad3de9e26c0af827f64c0c316e')
        ;;
+        514)
+        opt_ver="5.8-5.14"
+	cpu_opt_sum='2f99d9e37f372925e054115bfead4723a328ffbdb7bf958753aab2ac48dc5673'
+	kernel_sum='74f39a0c69e9d7c94d290515645396725e3ce3667b85baf4b3c3f6f303c7a406'
+	;;
+        515)
+        opt_ver="5.15+"
+	cpu_opt_sum='14baea3bc9ffbe41737cfce6f0c5e6b536021571de7b5c7a9e39b31b94b23668'
+	kernel_sum='d2baa6a1aed59202f599fb69074d0adf5f2754b63e271a22465f29dd593bb774'
 esac
 
-# sums check
-if [ ! -e ${srcdir}/sum_check ]; then
-	cd ${srcdir}
-	for i in ${source[@]}; do
-		sums+=($(sha256sum $i | cut -d' ' -f1))
-	done
-
-	for i in ${!sums[@]}; do
-		if [ "${sums[$i]}" != "${sha256sums[$i]}" ] && [ ! -e ${srcdir}/sum_failed ] ;then
-			error "sha256sum mismatch! ${source[$i]}"
-			touch ${srcdir}/sum_failed
-			exit 1
-		elif [ ! -e ${srcdir}/sum_failed ]; then
-			msg2 "Checking ${source[$i]} sum... OK"
-		else
-			error "Sum check failed! Will exit before build!"
-			break
-		fi
-	done
-	touch ${srcdir}/sum_check
-fi
-
 distfiles="${kernel_site}
-https://raw.githubusercontent.com/graysky2/kernel_gcc_patch/master/more-uarches-for-kernel-${opt_ver}.patch"
+https://raw.githubusercontent.com/graysky2/kernel_compiler_patch/master/more-uarches-for-kernel-${opt_ver}.patch"
 checksum="${kernel_sum}
 ${cpu_opt_sum}"
 nostrip=yes
@@ -529,22 +197,12 @@ do_configure() {
   export KBUILD_BUILD_USER=$pkgbase
   export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
 
-  #srcdir="${XBPS_BUILDDIR}/${wrksrc}/linx-${_kern_ver}"
-#  if [ ! -e "${_path}"/config_sel ] && [ "$_basever" != "510" ]; then
-#    plain "Use Void config file?"
-#    read -rp "`echo $'    > N/y : '`" _CONDITION_CONFIG;
-#    if [[ $_CONDIITON_CONFIG =~ [yY] ]]; then
-#      msg2 "Using Void Linux kernel config."
-#      cp ${_files}/${_basekernel}/x86_64-dotconfig ${srcdir}/config.x86_64
-#    fi
-#  fi
   if [[ "$_sub" = rc* ]]; then
     cd ${wrksrc}/linux-${_rc_kern_ver}
   else
     cd ${wrksrc}/linux-${_kern_ver}
   fi
   _tkg_srcprep
-  #cp ${_files}/config/${_basekernel}/config.x86_64 ${srcdir}
   
 }
 
@@ -814,6 +472,531 @@ linux-tkg-dbg_package() {
 
 # because xbps-src doesn't allow variables in subpkg functions
 case $_basever-$_cpusched$_compiler_name in
+	515-cacule)
+	linux515-tkg-cacule_package() {
+		short_desc+=" - CaCULE CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux515-tkg-headers-cacule_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	515-upds)
+	linux515-tkg-upds_package() {
+		short_desc+=" - undead (TkG) PDS CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux515-tkg-headers-upds_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	515-pds)
+	linux515-tkg-pds_package() {
+		short_desc+=" - PDS CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux515-tkg-headers-pds_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	515-bmq)
+	linux515-tkg-bmq_package() {
+		short_desc+=" - BMQ CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux515-tkg-headers-bmq_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	515-cfs)
+	linux515-tkg-cfs_package() {
+		short_desc+=" - CFS CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux515-tkg-headers-cfs_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	515-MuQSS)
+	linux515-tkg-MuQSS_package() {
+		short_desc+=" - MuQSS CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux515-tkg-headers-MuQSS_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	515-cacule-llvm)
+	linux515-tkg-cacule-llvm_package() {
+		short_desc+=" - CaCULE CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux515-tkg-headers-cacule-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	515-upds-llvm)
+	linux515-tkg-upds-llvm_package() {
+		short_desc+=" - undead (TkG) PDS CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux515-tkg-headers-upds-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	515-pds-llvm)
+	linux515-tkg-pds-llvm_package() {
+		short_desc+=" - PDS CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux515-tkg-headers-pds-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	515-bmq-llvm)
+	linux515-tkg-bmq-llvm_package() {
+		short_desc+=" - BMQ CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux515-tkg-headers-bmq-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	515-cfs-llvm)
+	linux515-tkg-cfs-llvm_package() {
+		short_desc+=" - CFS CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux515-tkg-headers-cfs-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	515-MuQSS-llvm)
+	linux515-tkg-MuQSS-llvm_package() {
+		short_desc+=" - MuQSS CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux515-tkg-headers-MuQSS-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	514-cacule)
+	linux514-tkg-cacule_package() {
+		short_desc+=" - CaCULE CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux514-tkg-headers-cacule_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	514-upds)
+	linux514-tkg-upds_package() {
+		short_desc+=" - undead (TkG) PDS CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux514-tkg-headers-upds_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	514-pds)
+	linux514-tkg-pds_package() {
+		short_desc+=" - PDS CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux514-tkg-headers-pds_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	514-bmq)
+	linux514-tkg-bmq_package() {
+		short_desc+=" - BMQ CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux514-tkg-headers-bmq_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	514-cfs)
+	linux514-tkg-cfs_package() {
+		short_desc+=" - CFS CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux514-tkg-headers-cfs_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	514-MuQSS)
+	linux514-tkg-MuQSS_package() {
+		short_desc+=" - MuQSS CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux514-tkg-headers-MuQSS_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	514-cacule-llvm)
+	linux514-tkg-cacule-llvm_package() {
+		short_desc+=" - CaCULE CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux514-tkg-headers-cacule-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	514-upds-llvm)
+	linux514-tkg-upds-llvm_package() {
+		short_desc+=" - undead (TkG) PDS CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux514-tkg-headers-upds-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	514-pds-llvm)
+	linux514-tkg-pds-llvm_package() {
+		short_desc+=" - PDS CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux514-tkg-headers-pds-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	514-bmq-llvm)
+	linux514-tkg-bmq-llvm_package() {
+		short_desc+=" - BMQ CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux514-tkg-headers-bmq-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	514-cfs-llvm)
+	linux514-tkg-cfs-llvm_package() {
+		short_desc+=" - CFS CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux514-tkg-headers-cfs-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	514-MuQSS-llvm)
+	linux514-tkg-MuQSS-llvm_package() {
+		short_desc+=" - MuQSS CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux514-tkg-headers-MuQSS-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	514-pds)
+	linux514-tkg-pds_package() {
+		short_desc+=" - PDS CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux514-tkg-headers-pds_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
 	512-upds)
 	linux512-tkg-upds_package() {
 		short_desc+=" - undead (TkG) PDS CPU Scheduler compiled w/GCC"
@@ -1014,27 +1197,6 @@ case $_basever-$_cpusched$_compiler_name in
 		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
 	}
 	linux512-tkg-headers-MuQSS-llvm_package() {
-  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
-  		nostrip=yes
-  		preserve=yes
-  		noshlibprovides=yes
-  		pkg_install() {
-        		vmove /usr/src
-        		vmove /usr/lib/modules/${_kernver}/build
-  		}
-	}
-	;;
-	512-upds)
-	linux512-tkg-upds_package() {
-		short_desc+=" - undead (TkG) PDS CPU Scheduler compiled w/GCC"
-		nostrip=yes
-		noshlibprovides=yes
-		preserve=yes
-		triggers="kernel-hooks"
-		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
-		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
-	}
-	linux512-tkg-headers-upds_package() {
   		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
   		nostrip=yes
   		preserve=yes
