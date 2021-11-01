@@ -374,8 +374,10 @@ do_install() {
         cp net/mac80211/*.h ${hdrdest}/net/mac80211
 
         # add dvb headers for external modules
-        mkdir -p ${hdrdest}/include/config/dvb/
-        cp include/config/dvb/*.h ${hdrdest}/include/config/dvb/
+	if [ $_basever -lt 514 ]; then 
+	        mkdir -p ${hdrdest}/include/config/dvb/
+        	cp include/config/dvb/*.h ${hdrdest}/include/config/dvb/
+	fi
 
         # add dvb headers for http://mcentral.de/hg/~mrec/em28xx-new
         mkdir -p ${hdrdest}/drivers/media/dvb-frontends
