@@ -1,7 +1,7 @@
 # Template file for 'python3-libtmux'
 pkgname=python3-libtmux
-version=0.8.5
-revision=5
+version=0.10.3
+revision=1
 wrksrc="libtmux-${version}"
 build_style=python3-module
 hostmakedepends="python3-setuptools"
@@ -11,7 +11,7 @@ maintainer="Alexander Egorenkov <egorenar-dev@posteo.net>"
 license="MIT"
 homepage="https://github.com/tmux-python/libtmux"
 distfiles="${PYPI_SITE}/l/libtmux/libtmux-${version}.tar.gz"
-checksum=1d35b9f8451944d31c5ed22ed9e6c8e18034adcc75718fcc5b27fbd9621543e1
+checksum=c7fbd837f0a9e4d33a157523e4ca6ef95e80256842e094ffd766c3dbd78d1957
 # Disable check which uses pip to pull external python packages
 make_check=no
 

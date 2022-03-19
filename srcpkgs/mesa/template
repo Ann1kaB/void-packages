@@ -1,6 +1,6 @@
 # Template file for 'mesa'
 pkgname=mesa
-version=21.2.5
+version=21.3.7
 revision=1
 build_style=meson
 configure_args="-Dglvnd=true -Dshared-glapi=enabled -Dgbm=enabled -Degl=enabled
@@ -22,7 +22,7 @@ license="MIT, LGPL-2.1-or-later"
 homepage="https://www.mesa3d.org/"
 changelog="https://docs.mesa3d.org/relnotes/${version}.html"
 distfiles="https://mesa.freedesktop.org/archive/mesa-${version}.tar.xz"
-checksum=8e49585fb760d973723dab6435d0c86f7849b8305b1e6d99f475138d896bacbb
+checksum=b4fa9db7aa61bf209ef0b40bef83080999d86ad98df8b8b4fada7c128a1efc3d
 
 if [ "$XBPS_TARGET_LIBC" = "musl" ]; then
 	configure_args+=" -Duse-elf-tls=false"
@@ -37,7 +37,7 @@ case "$XBPS_TARGET_MACHINE" in
 esac
 
 # Set subpackages manually to set proper rdeps in 32bit pkgs.
-subpackages="libglapi libgbm libOSMesa"
+subpackages="libglapi libgbm libgbm-devel libOSMesa"
 
 # Replace old mesa pkgs, superseded by libglvnd.
 replaces="libGL>=10_1<19.2.5_2 libEGL>=10_1<19.2.5_2 libGLES>=10_1<19.2.5_2"
@@ -113,8 +113,11 @@ if [ "$_have_nv" ]; then
 fi
 
 if [ "$_have_arm" ]; then
+	_have_vulkan=yes
 	_gallium_drivers+=",kmsro"
 	_gallium_drivers+=",v3d,vc4,freedreno,etnaviv,lima,panfrost"
+	_vulkan_drivers+=",broadcom"
+	subpackages+=" mesa-vulkan-broadcom"
 	# transitional dummy packages
 	subpackages+=" mesa-kmsro-dri mesa-v3d-dri mesa-vc4-dri"
 	subpackages+=" mesa-etnaviv-dri mesa-freedreno-dri"
@@ -246,6 +249,16 @@ libgbm_package() {
 	}
 }
 
+libgbm-devel_package() {
+	short_desc="Mesa Generic buffer management API - development files"
+	depends="libgbm>=${version}_${revision}"
+	pkg_install() {
+		vmove usr/include/gbm.h
+		vmove usr/lib/libgbm.so
+		vmove usr/lib/pkgconfig/gbm.pc
+	}
+}
+
 libOSMesa_package() {
 	short_desc="Mesa Off-Screen interface library"
 	pkg_install() {
@@ -254,17 +267,15 @@ libOSMesa_package() {
 }
 
 MesaLib-devel_package() {
-	depends="xorgproto libxshmfence-devel libXext-devel libXxf86vm-devel
-	 libXdamage-devel expat-devel libXfixes-devel libX11-devel libxcb-devel
-	 libdrm-devel libglvnd-devel
-	 libOSMesa>=${version}_${revision} libgbm>=${version}_${revision}
-	 mesa>=${version}_${revision}"
+	depends="mesa>=${version}_${revision} libOSMesa>=${version}_${revision}
+	 libgbm-devel>=${version}_${revision}"
 	if [ "$_have_vmware" ]; then
 		depends+=" libxatracker>=${version}_${revision}"
 	fi
 	if [ "$_have_opencl" ]; then
 		depends+=" mesa-opencl>=${version}_${revision}"
 	fi
+	depends+=" libdrm-devel libglvnd-devel"
 	short_desc+=" - development files"
 	pkg_install() {
 		vmove usr/include
@@ -272,7 +283,6 @@ MesaLib-devel_package() {
 		vmove usr/lib/libEGL_mesa.so
 		vmove usr/lib/libGLX_mesa.so
 		vmove usr/lib/libOSMesa.so
-		vmove usr/lib/libgbm.so
 		vmove usr/lib/libglapi.so
 		if [ "$_have_vmware" ]; then
 			vmove usr/lib/libxatracker.so
@@ -295,6 +305,7 @@ mesa-opencl_package() {
 	depends="libclc"
 	pkg_install() {
 		vmove etc/OpenCL
+		vmove usr/lib/gallium-pipe
 		vmove "usr/lib/libMesaOpenCL.so.*"
 	}
 }
@@ -304,14 +315,7 @@ mesa-dri_package() {
 	depends="mesa-${version}_${revision}"
 	shlib_provides="libgallium_dri.so" # workaround for mesa-dri-32bit
 	pkg_install() {
-		# Only strip each megadriver once, via its master filename
-		nostrip_files=$(find "${DESTDIR}/usr/lib/dri" \
-		 ! -name 'libmesa_dri_drivers.so' ! -name 'libgallium_dri.so' \
-		  -type f -printf '%f ')
-		vmove "usr/lib/dri"
-		if [ -d "$DESTDIR/usr/lib/gallium-pipe" ]; then
-			vmove "usr/lib/gallium-pipe/pipe_*.so"
-		fi
+		vmove usr/lib/dri
 	}
 }
 
@@ -319,8 +323,6 @@ mesa-vaapi_package() {
 	short_desc="Mesa VA-API drivers"
 	shlib_provides="libgallium_drv_video.so" # workaround for mesa-vaapi-32bit
 	pkg_install() {
-		nostrip_files=$(find "${DESTDIR}/usr/lib/dri" \
-		 ! -name 'libgallium_drv_video.so' -type f -printf '%f ')
 		vmove "usr/lib/dri/*_drv_video.so"
 	}
 }
@@ -328,8 +330,6 @@ mesa-vaapi_package() {
 mesa-vdpau_package() {
 	short_desc="Mesa VDPAU drivers"
 	pkg_install() {
-		nostrip_files=$(find "${DESTDIR}/usr/lib/vdpau" \
-		 ! -name 'libvdpau_gallium.so*' -type f -printf '%f ')
 		vmove "usr/lib/vdpau/libvdpau_*"
 	}
 }
@@ -337,8 +337,6 @@ mesa-vdpau_package() {
 mesa-XvMC_package() {
 	short_desc="Mesa XvMC drivers"
 	pkg_install() {
-		nostrip_files=$(find "${DESTDIR}/usr/lib/libXvMC"* \
-		 ! -name 'libXvMCgallium.so' -type f -printf '%f ')
 		vmove "usr/lib/libXvMC*"
 	}
 }
@@ -356,6 +354,14 @@ mesa-vulkan-radeon_package() {
 	pkg_install() {
 		vmove "usr/share/vulkan/icd.d/radeon_icd*.json"
 		vmove "usr/lib/libvulkan_radeon.so"
+	}
+}
+
+mesa-vulkan-broadcom_package() {
+	short_desc="Mesa Broadcom Vulkan driver"
+	pkg_install() {
+		vmove "usr/share/vulkan/icd.d/broadcom_icd*.json"
+		vmove "usr/lib/libvulkan_broadcom.so"
 	}
 }
 

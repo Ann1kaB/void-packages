@@ -1,6 +1,6 @@
 # Template file for 'tor'
 pkgname=tor
-version=0.4.6.7
+version=0.4.6.10
 revision=1
 build_style=gnu-configure
 configure_args="--enable-zstd"
@@ -14,7 +14,7 @@ license="BSD-3-Clause"
 homepage="https://www.torproject.org/"
 changelog="https://gitlab.torproject.org/tpo/core/tor/-/raw/main/ChangeLog"
 distfiles="https://dist.torproject.org/tor-${version}.tar.gz"
-checksum=ff665ce121b2952110bd98b9c8741b5593bf6c01ac09033ad848ed92c2510f9a
+checksum=94ccd60e04e558f33be73032bc84ea241660f92f58cfb88789bda6893739e31c
 
 conf_files="/etc/tor/torrc"
 system_accounts="tor"

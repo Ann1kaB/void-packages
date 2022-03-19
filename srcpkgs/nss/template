@@ -3,7 +3,7 @@
 _nsprver=4.32
 
 pkgname=nss
-version=3.71
+version=3.76
 revision=1
 hostmakedepends="perl"
 makedepends="nspr-devel sqlite-devel zlib-devel"
@@ -13,7 +13,7 @@ maintainer="Đoàn Trần Công Danh <congdanhqx@gmail.com>"
 license="MPL-2.0"
 homepage="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS"
 distfiles="${MOZILLA_SITE}/security/nss/releases/NSS_${version//\./_}_RTM/src/nss-${version}.tar.gz"
-checksum=99acd315d9af35419cda4a6960f00a7d446bd231bd407174a7b07cb3dba0c253
+checksum=1b8e0310add364d2ade40620cde0f1c37f4f00a6999b2d3e7ea8dacda4aa1630
 
 export NS_USE_GCC=1
 export LIBRUNPATH=

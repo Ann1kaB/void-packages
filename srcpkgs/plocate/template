@@ -1,6 +1,6 @@
 # Template file for 'plocate'
 pkgname=plocate
-version=1.1.12
+version=1.1.15
 revision=1
 build_style=meson
 configure_args="
@@ -15,7 +15,7 @@ license="GPL-2.0-or-later"
 homepage="https://plocate.sesse.net/"
 changelog="https://git.sesse.net/?p=plocate;a=blob_plain;f=NEWS;hb=HEAD"
 distfiles="https://plocate.sesse.net/download/plocate-${version}.tar.gz"
-checksum=a11d25ad118f5a534dc079150667f92c9a1844f12eb290df3ce9383c51e555b5
+checksum=d1855954da8b811887de0e12ed8d236c0599ecd959ec5a6851503315507bf150
 
 system_accounts="_plocate"
 

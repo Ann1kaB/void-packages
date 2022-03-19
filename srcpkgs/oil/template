@@ -1,6 +1,6 @@
 # Template file for 'oil'
 pkgname=oil
-version=0.9.3
+version=0.9.8
 revision=1
 build_style=configure
 configure_args="--prefix=/usr $(vopt_with readline)"
@@ -11,7 +11,7 @@ maintainer="MarcoAPC <marcoaureliopc@gmail.com>"
 license="Apache-2.0"
 homepage="https://www.oilshell.org"
 distfiles="${homepage}/download/${pkgname}-${version}.tar.xz"
-checksum=62f36072f69f3378e03b79d8d5255c1d136094ec11410db4f16ee82f1660efda
+checksum=3acaf17c9e5d17d027a60d6be878fe683d7de25f7d5fd621e2f219f91f9a1fc1
 register_shell="/usr/bin/osh"
 nocross="Build systems gets confused with host and cross toolchains/headers"
 nostrip=yes

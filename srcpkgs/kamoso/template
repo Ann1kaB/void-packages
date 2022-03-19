@@ -1,6 +1,6 @@
 # Template file for 'kamoso'
 pkgname=kamoso
-version=21.08.2
+version=21.12.3
 revision=1
 build_style=cmake
 hostmakedepends="
@@ -18,5 +18,6 @@ short_desc="Simple and friendly program to use your webcam recorder"
 maintainer="Hervy Qurrotul Ainur Rozi <hervyqa@pm.me>"
 license="GPL-2.0-or-later"
 homepage="https://apps.kde.org/kamoso/"
+changelog="https://kde.org/announcements/changelogs/gear/${version}/#kamoso"
 distfiles="${KDE_SITE}/release-service/${version}/src/${pkgname}-${version}.tar.xz"
-checksum=f72c81d9b8039ea5961e97d8a9a0c29051642bf697e71424200abe7c664d6d66
+checksum=2bde8e8e6de25673a412ba6a966e898959ee5625dcadadc1bc295c12ad7128e1

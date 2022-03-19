@@ -3,7 +3,7 @@
 # THIS PKG MUST BE SYNCHRONIZED WITH "srcpkgs/firefox-i18n".
 #
 pkgname=firefox
-version=93.0
+version=98.0
 revision=1
 build_helper="rust"
 short_desc="Mozilla Firefox web browser"
@@ -11,7 +11,7 @@ maintainer="Duncaen <duncaen@voidlinux.org>"
 license="MPL-2.0, GPL-2.0-or-later, LGPL-2.1-or-later"
 homepage="https://www.mozilla.org/firefox/"
 distfiles="${MOZILLA_SITE}/${pkgname}/releases/${version}/source/${pkgname}-${version}.source.tar.xz"
-checksum=a78f080f5849bc284b84299f3540934a12e961a7ea368b592ae6576ea1f97102
+checksum=fd0a4c11d007d9045706667eb0f99f9b7422945188424cb937bfef530cb6f4dd
 
 lib32disabled=yes
 
@@ -24,7 +24,7 @@ makedepends="nss-devel libjpeg-turbo-devel gtk+3-devel icu-devel
  $(vopt_if dbus dbus-glib-devel) $(vopt_if pulseaudio pulseaudio-devel)
  $(vopt_if xscreensaver libXScrnSaver-devel)
  $(vopt_if sndio sndio-devel) $(vopt_if jack jack-devel)"
-depends="nss>=3.66 nspr>=4.32 desktop-file-utils hicolor-icon-theme"
+depends="nss>=3.72 nspr>=4.32 desktop-file-utils hicolor-icon-theme"
 conflicts="firefox-esr>=0"
 
 build_options="alsa jack dbus pulseaudio xscreensaver sndio wayland"
@@ -32,6 +32,7 @@ build_options_default="alsa jack dbus pulseaudio xscreensaver sndio wayland"
 
 case $XBPS_TARGET_MACHINE in
 	armv[56]*) broken="required NEON extensions are not supported on armv6" ;;
+	armv7*) broken="currently broken" ;;
 	ppc64*) ;;
 	ppc*) broken="xptcall bitrot" ;;
 esac
@@ -75,20 +76,33 @@ do_build() {
 	case "$XBPS_TARGET_MACHINE" in
 	*-musl)
 		echo "ac_add_options --disable-jemalloc" >>.mozconfig
-		echo "ac_add_options --disable-gold" >>.mozconfig
+		echo "ac_add_options --enable-linker=bfd" >>.mozconfig
 		;;
 	esac
 
 	case "$XBPS_TARGET_MACHINE" in
-	x86_64*|i686*|arm*)
+	x86_64*|i686*|arm*|aarch64*)
 		echo "ac_add_options --disable-elf-hack" >>.mozconfig
 		;;
 	esac
 
-	# webrtc currently fails to build on 32-bit ppc...
+	# third_party/libwebrtc/common_audio/wav_file.cc:93:2: error:
+	# #error "Need to convert samples to big-endian when reading from WAV file"
+	if [ "$XBPS_TARGET_ENDIAN" = "be" ]; then
+		echo "ac_add_options --disable-webrtc" >>.mozconfig
+	fi
+
+	# it seems mozilla has started catching up with google's webrtc
+	# and this newly involves introducing several megabytes of generated
+	# json junk that we just cannot maintain in-tree, additionally they
+	# have indicated that they will be re-generating these frequently
+	#
+	# it is unacceptable to keep a 7MB patch downstream, so disable it
+	#
+	# https://phabricator.services.mozilla.com/D134738
+	#
 	case "$XBPS_TARGET_MACHINE" in
-	ppc64*) ;;
-	ppc*) echo "ac_add_options --disable-webrtc" >>.mozconfig ;;
+		ppc64le*|armv7l*) echo "ac_add_options --disable-webrtc" >>.mozconfig ;;
 	esac
 
 	if [ "$XBPS_TARGET_NO_ATOMIC8" ]; then
@@ -119,6 +133,10 @@ do_build() {
 		echo "ac_add_options --target=$XBPS_TRIPLET" >>.mozconfig
 		echo "ac_add_options --host=$XBPS_TRIPLET" >>.mozconfig
 	fi
+
+	# XXX: wasi currently not ready
+	# echo "ac_add_options --with-wasi-sysroot=/usr/share/wasi-sysroot" >>.mozconfig
+	echo "ac_add_options --without-wasm-sandboxed-libraries" >>.mozconfig
 
 	mkdir -p third_party/rust/libloading/.deps
 

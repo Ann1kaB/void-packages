@@ -42,6 +42,7 @@ packages for XBPS, the `Void Linux` native packaging system.
 	* [Go packages](#pkgs_go)
 	* [Haskell packages](#pkgs_haskell)
 	* [Font packages](#pkgs_font)
+	* [Renaming a package](#pkg_rename)
 	* [Removing a package](#pkg_remove)
 	* [XBPS Triggers](#xbps_triggers)
 		* [appstream-cache](#triggers_appstream_cache)
@@ -422,7 +423,7 @@ in this directory such as `${XBPS_BUILDDIR}/${wrksrc}`.
 
 - `XBPS_WRAPPERDIR` Full path to where xbps-src's wrappers for utilities are stored.
 
-- `XBPS_CROSS_BASE` Full path to where cross-compile dependencies are installed, varies according to the target architecture triplet. i.e `aarch64` -> `aarch64-unknown-linux-gnu`.
+- `XBPS_CROSS_BASE` Full path to where cross-compile dependencies are installed, varies according to the target architecture triplet. i.e `aarch64` -> `/usr/aarch64-linux-gnu`.
 
 - `XBPS_RUST_TARGET` The target architecture triplet used by `rustc` and `cargo`.
 
@@ -581,8 +582,9 @@ phase if `${build_style}` is set to `configure`, `gnu-configure` or
 `PREFIX=/usr DESTDIR=${DESTDIR}`.
 
 - `make_build_target` The build target. If `${build_style}` is set to `configure`, `gnu-configure`
-or `gnu-makefile`, this is the target passed to `${make_cmd}` in the build phase; when unset, it
-defaults to `all`. If `${build_style}` is `python3-pep517`, this is the path of the package
+or `gnu-makefile`, this is the target passed to `${make_cmd}` in the build phase;
+when unset the default target is used.
+If `${build_style}` is `python3-pep517`, this is the path of the package
 directory that should be built as a Python wheel; when unset, defaults to `.` (the current
 directory with respect to the build).
 
@@ -602,7 +604,9 @@ patches to the package sources during `do_patch()`. Patches are stored in
 `srcpkgs/<pkgname>/patches` and must be in `-p1` format. By default set to `-Np1`.
 
 - `disable_parallel_build` If set the package won't be built in parallel
-and `XBPS_MAKEJOBS` has no effect.
+and `XBPS_MAKEJOBS` will be set to 1. If a package does not work well with `XBPS_MAKEJOBS`
+but still has a mechanism to build in parallel, set `disable_parallel_build` and
+use `XBPS_ORIG_MAKEJOBS` (which holds the original value of `XBPS_MAKEJOBS`) in the template.
 
 - `make_check` Sets the cases in which the `check` phase is run.
 This option has to be accompanied by a comment explaining why the tests fail.
@@ -643,7 +647,7 @@ Example: `conf_files="/etc/foo.conf /etc/foo2.conf /etc/foo/*.conf"`.
 default all binaries are stripped.
 
 - `nostrip_files` White-space separated list of ELF binaries that won't be stripped of
-debugging symbols.
+debugging symbols. Files can be given by full path or by filename.
 
 - `noshlibprovides` If set, the ELF binaries won't be inspected to collect the provided
 sonames in shared libraries.
@@ -689,7 +693,7 @@ This appends to the generated file rather than replacing it.
   features (PIE, relro, etc). Not necessary for most packages.
 
 - `nopie_files` White-space seperated list of ELF binaries that won't be checked
-for PIE.
+for PIE. Files must be given by full path.
 
 - `reverts` xbps supports a unique feature which allows to downgrade from broken
 packages automatically. In the `reverts` field one can define a list of broken
@@ -749,6 +753,9 @@ built for, available architectures can be found under `common/cross-profiles`.
 In general, `archs` should only be set if the upstream software explicitly targets
 certain architectures or there is a compelling reason why the software should not be
 available on some supported architectures.
+Prepending pattern with tilde means disallowing build on indicated archs.
+First matching pattern is taken to allow/deny build. When no pattern matches,
+package is build if last pattern includes tilde.
 Examples:
 
 	```
@@ -998,6 +1005,10 @@ configure arguments can be specified via `cross_*_configure_args` where `*` is `
 additionally passed to both early and final `gcc`. You can also specify custom `CFLAGS`
 and `LDFLAGS` for the libc as `cross_(glibc|musl)_(cflags|ldflags)`.
 
+- `zig-build` For packages using [Zig](https://ziglang.org)'s build
+system. Additional arguments may be passed to the `zig build` invocation using
+`configure_args`.
+
 For packages that use the Python module build method (`setup.py` or
 [PEP 517](https://www.python.org/dev/peps/pep-0517/)), you can choose one of the following:
 
@@ -1106,9 +1117,9 @@ Current working directory for functions is set as follows:
 
 - For do_fetch, post_fetch: `XBPS_BUILDDIR`.
 
-- For do_extract, post_extract, pre_patch, do_patch, post_patch: `wrksrc`.
+- For do_extract, post_extract: `wrksrc`.
 
-- For pre_configure through post_install: `build_wrksrc`
+- For pre_patch through post_install: `build_wrksrc`
 if it is defined, otherwise `wrksrc`.
 
 <a id="build_options"></a>
@@ -1651,6 +1662,18 @@ cache during the install/removal of the package
 - `font_dirs`: which should be set to the directory where the package
 installs its fonts
 
+<a id="pkg_rename"></a>
+### Renaming a package
+
+- Create empty package of old name, depending on new package. This is
+necessary to provide updates to systems where old package is already
+installed. This should be a subpackage of new one, except when version
+number of new package decreased: then create a separate template using
+old version and increased revision.
+- Edit references to package in other templates and common/shlibs.
+- Don't set `replaces=`, it can result in removing both packages from
+systems by xbps.
+
 <a id="pkg_remove"></a>
 ### Removing a package
 
@@ -1908,7 +1931,7 @@ Although `xbps-src` will automatically include the `dkms` trigger whenever
 before the modules are compiled.
 
 By default, the trigger uses `dracut --regenerate-all` to recreate initramfs
-images. If `/etc/defalt/initramfs-regenerate` exists and defines
+images. If `/etc/default/initramfs-regenerate` exists and defines
 `INITRAMFS_GENERATOR=mkinitcpio`, the trigger will instead use `mkinitcpio` and
 loop over all kernel versions for which modules appear to be installed.
 Alternatively, setting `INITRAMFS_GENERATOR=none` will disable image
@@ -2124,7 +2147,7 @@ a github pull request.
 To keep your forked repository always up to date, setup the `upstream` remote
 to pull in new changes:
 
-    $ git remote add upstream git://github.com/void-linux/void-packages.git
+    $ git remote add upstream https://github.com/void-linux/void-packages.git
     $ git pull --rebase upstream master
 
 <a id="help"></a>

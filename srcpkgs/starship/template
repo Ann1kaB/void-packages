@@ -1,6 +1,6 @@
 # Template file for 'starship'
 pkgname=starship
-version=0.58.0
+version=1.3.0
 revision=1
 build_style=cargo
 build_helper=qemu
@@ -13,7 +13,7 @@ maintainer="cinerea0 <cinerea0@protonmail.com>"
 license="ISC"
 homepage="https://starship.rs"
 distfiles="https://github.com/starship/starship/archive/refs/tags/v${version}.tar.gz"
-checksum=8bd4cfad4bcf9694633f228de0c7dc6cfab6bb6955e2a7299ed28dd8c4d6f5e4
+checksum=3f29cb6e5cb7c673cbc1f8e91ceb4a0d1317d235b147db15e461ffec22be13a5
 
 post_build() {
 	STARSHIP="target/${RUST_TARGET}/release/starship"

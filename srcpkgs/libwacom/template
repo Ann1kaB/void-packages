@@ -4,12 +4,12 @@ version=1.12
 revision=1
 build_style=meson
 build_helper="qemu"
-configure_args="-Ddocumentation=disabled -Dexe_wrapper=qemu-${XBPS_TARGET_QEMU_MACHINE}-static"
+configure_args="-Ddocumentation=disabled"
 hostmakedepends="pkg-config"
 makedepends="libgudev-devel libxml2-devel"
 checkdepends="python3-pytest python3-libevdev python3-pyudev"
 short_desc="Library to identify wacom tablets"
-maintainer="skmpz <dem.procopiou@gmail.com>"
+maintainer="Orphaned <orphan@voidlinux.org>"
 license="MIT"
 homepage="https://github.com/linuxwacom/libwacom"
 changelog="https://raw.githubusercontent.com/linuxwacom/libwacom/master/NEWS"

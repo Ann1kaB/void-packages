@@ -1,6 +1,6 @@
 # Template file for 'ffmpegthumbs'
 pkgname=ffmpegthumbs
-version=21.08.0
+version=21.12.3
 revision=1
 build_style=cmake
 hostmakedepends="extra-cmake-modules kcoreaddons kconfig-devel
@@ -10,5 +10,6 @@ short_desc="FFmpeg-based thumbnail creator for video files"
 maintainer="Michael Straube <straubem@gmx.de>"
 license="GPL-2.0-or-later"
 homepage="https://kde.org/applications/"
+changelog="https://kde.org/announcements/changelogs/gear/${version}/#ffmpegthumbs"
 distfiles="${KDE_SITE}/release-service/${version}/src/ffmpegthumbs-${version}.tar.xz"
-checksum=b5b8f70cd63b08a5d83b8bc18c0fa516341f7d498a5fb1d98b77c5eeb6b37131
+checksum=9a9b310eef45990f065449688801f435fbc9e0a936c83e6e307f7e0546bf4f74

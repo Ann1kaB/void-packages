@@ -1,11 +1,11 @@
 # Template file for 'plasma-disks'
 pkgname=plasma-disks
-version=5.23.2
+version=5.24.2
 revision=1
 build_style=cmake
 configure_args="-DBUILD_TESTING=OFF"
 hostmakedepends="extra-cmake-modules qt5-qmake qt5-host-tools
- gettext kcoreaddons kauth"
+ kpackage gettext kcoreaddons kauth"
 makedepends="plasma-framework-devel"
 depends="smartmontools"
 short_desc="Hard disk health monitoring for KDE Plasma"
@@ -13,4 +13,4 @@ maintainer="John <me@johnnynator.dev>"
 license="GPL-2.0-or-later"
 homepage="https://invent.kde.org/plasma/plasma-disks"
 distfiles="${KDE_SITE}/plasma/${version}/${pkgname}-${version}.tar.xz"
-checksum=7c8e8fde93f0ba4d860f7c4b814ac6daccceeae6ec38b1ec095b49b2cb081b5e
+checksum=e2135701903316f46df042f8b0eade162a1f1412644d9f4d9fa0512856b81522

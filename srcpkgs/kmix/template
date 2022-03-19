@@ -1,6 +1,6 @@
 # Template file for 'kmix'
 pkgname=kmix
-version=21.08.2
+version=21.12.3
 revision=1
 build_style=cmake
 configure_args="-DSYSCONF_INSTALL_DIR=/etc -DDESKTOPTOJSON_EXECUTABLE=/usr/bin/desktoptojson"
@@ -12,5 +12,6 @@ short_desc="KDE's mixer application"
 maintainer="Piotr Wójcik <chocimier@tlen.pl>"
 license="GPL-2.0-or-later, LGPL-2.0-or-later, GFDL-1.2-only"
 homepage="https://www.kde.org/applications/multimedia/kmix/"
+changelog="https://kde.org/announcements/changelogs/gear/${version}/#kmix"
 distfiles="${KDE_SITE}/release-service/${version}/src/kmix-${version}.tar.xz"
-checksum=b8b9cae11dc23d62fc0c4990c0cf7560e5337cf831cbb46b3e880b9ca90a3beb
+checksum=13c1336f9e8e7a64f3e89a0558b9f16547a33e37f917bd491dfb061d25ed62fe

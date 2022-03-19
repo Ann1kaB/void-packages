@@ -1,6 +1,6 @@
 # Template file for 'kcalc'
 pkgname=kcalc
-version=21.08.0
+version=21.12.3
 revision=1
 build_style=cmake
 configure_args="-DBUILD_TESTING=OFF"
@@ -11,5 +11,6 @@ short_desc="Simple and scientific calculator"
 maintainer="Norbert Vegh <vegh@norvegh.com>"
 license="GPL-2.0-or-later"
 homepage="https://kde.org/applications/en/utilities/org.kde.kcalc"
+changelog="https://kde.org/announcements/changelogs/gear/${version}/#kcalc"
 distfiles="${KDE_SITE}/release-service/${version}/src/kcalc-${version}.tar.xz"
-checksum=03da123c15267c135784476c194f4c559888b76ab5311671f92a90a741b8c391
+checksum=986ca84e82fda9325171a84c8efd7fd4eb2a82e3082af536473db24f33fcd897

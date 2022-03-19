@@ -1,6 +1,6 @@
 # Template file for 'qpdf'
 pkgname=qpdf
-version=10.3.2
+version=10.6.3
 revision=1
 wrksrc="qpdf-release-qpdf-${version}"
 build_style=gnu-configure
@@ -10,9 +10,9 @@ short_desc="Content-Preserving PDF Transformation System"
 maintainer="Benjamín Albiñana <benalb@gmail.com>"
 license="Apache-2.0"
 homepage="https://github.com/qpdf/qpdf"
-changelog="https://raw.githubusercontent.com/qpdf/qpdf/master/ChangeLog"
+changelog="https://raw.githubusercontent.com/qpdf/qpdf/stable/manual/release-notes.rst"
 distfiles="${homepage}/archive/release-qpdf-${version}.tar.gz"
-checksum=8f1f42d1c36f62cf5bb4d2511e80e4fc0125093adc7fc444bc96cb7e79e71402
+checksum=64bbb654ec19b6812284ef1bc40c57b091de5281f265f1c3c83dd8ccf6bedcf5
 
 if [ "$XBPS_TARGET_NO_ATOMIC8" ]; then
 	makedepends+=" libatomic-devel"

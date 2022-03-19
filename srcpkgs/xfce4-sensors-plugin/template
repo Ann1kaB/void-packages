@@ -1,6 +1,6 @@
 # Template file for 'xfce4-sensors-plugin'
 pkgname=xfce4-sensors-plugin
-version=1.4.1
+version=1.4.3
 revision=1
 build_style=gnu-configure
 configure_args="--with-locales-dir=/usr/share/locale --disable-static"
@@ -11,8 +11,9 @@ short_desc="Xfce hardware sensors plugin"
 maintainer="Orphaned <orphan@voidlinux.org>"
 license="GPL-2.0-or-later"
 homepage="https://goodies.xfce.org/projects/panel-plugins/xfce4-sensors-plugin"
+changelog="https://gitlab.xfce.org/panel-plugins/xfce4-sensors-plugin/-/raw/master/NEWS"
 distfiles="https://archive.xfce.org/src/panel-plugins/${pkgname}/${version%.*}/${pkgname}-${version}.tar.bz2"
-checksum=37d0dc569e735e482a18545c24eb1ce0229d6910e3a4d4c1dee0680999234be2
+checksum=171c0235f70c65f0ffee587e960d9da79b284855df22130239eac26272ec06c9
 
 if [ "$CROSS_BUILD" ]; then
 	# Cannot detect these when cross compiling

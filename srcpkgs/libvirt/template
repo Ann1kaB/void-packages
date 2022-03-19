@@ -1,6 +1,6 @@
 # Template file for 'libvirt'
 pkgname=libvirt
-version=7.8.0
+version=8.1.0
 revision=2
 build_style=meson
 configure_args="-Dqemu_user=libvirt -Dqemu_group=libvirt -Drunstatedir=/run
@@ -20,7 +20,9 @@ license="LGPL-2.1-or-later"
 homepage="https://libvirt.org"
 changelog="https://libvirt.org/news.html"
 distfiles="https://libvirt.org/sources/${pkgname}-${version}.tar.xz"
-checksum=a727cd0a47bfa24fa7de2874d23f3a9f9f02ceb6b49ba15288f6d9a098b19921
+checksum=3c6c43becffeb34a3f397c616206aa69a893ff8bf5e8208393c84e8e75352934
+# At least one test times out on CI but works locally
+make_check=ci-skip
 
 # FIX https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=701649
 system_accounts="libvirt"
@@ -72,6 +74,7 @@ post_patch() {
 pre_build() {
 	# racey custom targets; prevent parallelism issues
 	ninja -C build \
+		src/remote/lxc_protocol.h \
 		src/remote/qemu_protocol.h \
 		src/remote/remote_protocol.h \
 		src/util/virkeycodetable_linux.h \
@@ -83,18 +86,22 @@ pre_build() {
 }
 
 post_install() {
-	# runit services
-	vsv libvirtd
-	vsv virtlockd
-	vsv virtlogd
+	local _services _srv
 
-	rm -rf ${DESTDIR}/etc/sysconfig
+	# runit services; libvirtd is for legacy use
+	_services="libvirt-generic libvirtd virtqemud virtvboxd virtxend
+	 virtlxcd virtlockd virtlogd virtproxyd virtinterfaced virtnetworkd
+	 virtnodedevd virtnwfilterd virtsecretd virtstoraged"
+	for _srv in $_services; do
+		vsv $_srv
+	done
+
 	# Remove unused stuff.
+	rm -rf ${DESTDIR}/etc/sysconfig
 	rm -rf ${DESTDIR}/var/log
 
 	# workaround for musl not providing an utmpx implementation
-	if [ "$XBPS_TARGET_LIBC" = "musl" ];
-	then
+	if [ "$XBPS_TARGET_LIBC" = "musl" ]; then
 		echo "remember_owner = 0" >> ${DESTDIR}/etc/libvirt/qemu.conf
 	fi
 }

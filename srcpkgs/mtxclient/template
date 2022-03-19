@@ -1,17 +1,17 @@
 # Template file for 'mtxclient'
 pkgname=mtxclient
-version=0.5.1
+version=0.6.2
 revision=1
 build_style=cmake
 configure_args="-DBUILD_LIB_TESTS=OFF -DBUILD_LIB_EXAMPLES=OFF"
 hostmakedepends="pkg-config"
-makedepends="boost-devel json-c++ olm-devel openssl-devel"
+makedepends="json-c++ olm-devel openssl-devel coeurl-devel"
 short_desc="Client API library for the Matrix protocol"
 maintainer="Lorem <notloremipsum@protonmail.com>"
 license="MIT"
 homepage="https://github.com/Nheko-Reborn/mtxclient"
 distfiles="https://github.com/Nheko-Reborn/mtxclient/archive/v${version}.tar.gz"
-checksum=9478d870296ebe7679c90f563cb798eb3cdd3f9c4578ceea5af75b66f456baaa
+checksum=97e41340c3f03db8a7625dcd54f6c6a3c8726c7b7226630727fea7d2bb2213bf
 
 post_install() {
 	vlicense LICENSE

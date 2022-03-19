@@ -1,24 +1,24 @@
 # Template file for 'maturin'
 pkgname=maturin
-version=0.11.5
+version=0.12.11
 revision=1
 build_style=cargo
 build_helper=qemu
 # Disable the 'rustls' feature, which leads to bad platform compatibility
 # The list of enabled features should be reconciled with each new release
 configure_args="--no-default-features --features log,upload,human-panic"
-hostmakedepends="python3-setuptools python3-toml"
+hostmakedepends="python3-setuptools python3-tomli"
 makedepends="openssl-devel"
-depends="python3-toml"
+depends="python3-tomli"
 short_desc="Build and publish crates as python packages"
 maintainer="Andrew J. Hesford <ajh@sideband.org>"
 license="Apache-2.0, MIT"
 homepage="https://github.com/PyO3/maturin"
 # bump target-lexicon version if it changes in Cargo.lock
 distfiles="${homepage}/archive/v${version}.tar.gz
- https://github.com/bytecodealliance/target-lexicon/archive/v0.12.2.tar.gz"
-checksum="33b67e66e725c76eac866c2174cfbe708e77a44d215878474d84bc5f9f6386f3
- b6c2ddab7498cf6eab8e637a5b7895f3170b2f9ef989861d1ff33af6c8459b27"
+ https://github.com/bytecodealliance/target-lexicon/archive/v0.12.3.tar.gz>target-lexicon-${version}.tar.gz"
+checksum="4d39f15fae9c01f2f23a544fc26b20c68693ec03f820b30ca5f505647c452be1
+ 30ef841ec97532172726787ef9cac3b0cbf565dfdda4b6311e6414ffe63bef3e"
 # Tests use unstable features and fail to build
 make_check=no
 

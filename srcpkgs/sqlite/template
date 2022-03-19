@@ -1,6 +1,6 @@
 # Template file for 'sqlite'
 pkgname=sqlite
-version=3.36.0
+version=3.38.1
 revision=1
 _amalgamationver=$(printf "%d%02d%02d00\n" ${version//./ })
 wrksrc="sqlite-autoconf-${_amalgamationver}"
@@ -12,11 +12,11 @@ maintainer="Anthony Iliopoulos <ailiop@altatus.com>"
 license="Public Domain"
 homepage="https://sqlite.org/"
 changelog="https://www.sqlite.org/releaselog/${version//./_}.html"
-distfiles="${homepage}/2021/sqlite-autoconf-${_amalgamationver}.tar.gz"
-checksum=bd90c3eb96bee996206b83be7065c9ce19aef38c3f4fb53073ada0d0b69bbce3
+distfiles="${homepage}/2022/sqlite-autoconf-${_amalgamationver}.tar.gz"
+checksum=8e3a8ceb9794d968399590d2ddf9d5c044a97dd83d38b9613364a245ec8a2fc4
 
 CFLAGS="-DSQLITE_ENABLE_DBSTAT_VTAB -DSQLITE_ENABLE_COLUMN_METADATA \
- -DSQLITE_ENABLE_UNLOCK_NOTIFY -DSQLITE_SECURE_DELETE -DSQLITE_ENABLE_JSON1 \
+ -DSQLITE_ENABLE_UNLOCK_NOTIFY -DSQLITE_SECURE_DELETE \
  -DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_FTS3_PARENTHESIS -DSQLITE_ENABLE_FTS4 \
  -DSQLITE_ENABLE_FTS3_TOKENIZER=1 -DSQLITE_ENABLE_BATCH_ATOMIC_WRITE=1 \
  -DSQLITE_ENABLE_DESERIALIZE"

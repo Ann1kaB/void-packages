@@ -1,7 +1,7 @@
 # Template file for 'gnuplot'
 pkgname=gnuplot
-version=5.4.2
-revision=1
+version=5.4.3
+revision=2
 configure_args="--with-readline=builtin"
 hostmakedepends="pkg-config lua52"
 makedepends="zlib-devel libX11-devel gd-devel lua52-devel"
@@ -11,7 +11,7 @@ maintainer="Leah Neukirchen <leah@vuxu.org>"
 homepage="http://www.gnuplot.info/"
 license="gnuplot"
 distfiles="${SOURCEFORGE_SITE}/gnuplot/gnuplot/${version}/gnuplot-${version}.tar.gz"
-checksum=e57c75e1318133951d32a83bcdc4aff17fed28722c4e71f2305cfc2ae1cae7ba
+checksum=51f89bbab90f96d3543f95235368d188eb1e26eda296912256abcd3535bd4d84
 
 subpackages="gnuplot-common"
 if [ -z "$CROSS_BUILD" ]; then
@@ -44,7 +44,7 @@ pre_configure() {
 do_configure() {
 	if [ -z "$CROSS_BUILD" ]; then
 		cd ${wrksrc}/x11
-		./configure ${configure_args} --disable-wxwidgets --without-cairo --without-qt
+		./configure ${configure_args} --disable-wxwidgets --without-qt
 		cd ${wrksrc}/wx
 		./configure ${configure_args} --without-qt ac_cv_path_WX_CONFIG=wx-config-gtk3 LIBS="-lX11"
 		cd ${wrksrc}/qt

@@ -1,18 +1,17 @@
 # Template file for 'lazygit'
 pkgname=lazygit
-version=0.30
+version=0.33
 revision=1
 build_style=go
 go_import_path=github.com/jesseduffield/lazygit
 go_ldflags="-X main.version=${version} -X main.buildSource=voidlinux"
-hostmakedepends="git"
 depends="git"
 short_desc="Simple terminal UI for git commands"
 maintainer="Nathan Owens <ndowens@artixlinux.org>"
 license="MIT"
 homepage="https://github.com/jesseduffield/lazygit"
 distfiles="https://github.com/jesseduffield/lazygit/archive/v${version}.tar.gz"
-checksum=e0d1f442acb45fbb1eac1a77d60ad6e4db35470e62a2b9efe91832fce8cffbc6
+checksum=ff7ab429ecd54f6e2aedcfd4835eb8ca17c1990aac2534f8c2a19ce4267ade24
 
 post_install() {
 	vlicense LICENSE

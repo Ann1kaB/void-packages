@@ -1,6 +1,6 @@
 # Template file for 'revive'
 pkgname=revive
-version=1.1.1
+version=1.1.4
 revision=1
 build_style=go
 go_ldflags="-X main.version=$version -X main.builtBy=xbps"
@@ -10,7 +10,7 @@ maintainer="Roberto Ricci <ricci@disroot.org>"
 license="MIT"
 homepage="https://revive.run/"
 distfiles="https://github.com/mgechev/revive/archive/v$version.tar.gz"
-checksum=4ca423be81a92a32cc9b550d46bc6cc947ce9b938ee2827a094e6582ed162fc6
+checksum=afe0d11a614d5ca706485b7f6ca1e53b374b45017ea75f14149a4434d3ef74b5
 
 do_check() {
 	go test -v ./...

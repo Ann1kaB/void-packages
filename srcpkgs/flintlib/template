@@ -1,6 +1,6 @@
 # Template file for 'flintlib'
 pkgname=flintlib
-version=2.8.2
+version=2.8.4
 revision=1
 wrksrc="flint-${version}"
 build_style=configure
@@ -10,8 +10,9 @@ short_desc="Fast Library for Number Theory"
 maintainer="Gonzalo Tornaría <tornaria@cmat.edu.uy>"
 license="LGPL-2.1-or-later"
 homepage="https://flintlib.org"
+changelog="https://raw.githubusercontent.com/wbhart/flint2/trunk/NEWS"
 distfiles="https://flintlib.org/flint-${version}.tar.gz"
-checksum=4e878577dc1e17b27887272ff1dff1721189b078d36682c5ceb71b34cd1b3484
+checksum=61df92ea8c8e9dc692d46c71d7f50aaa09a33d4ba08d02a1784730a445e5e4be
 
 build_options="ntl"
 desc_option_ntl="enable NTL support"

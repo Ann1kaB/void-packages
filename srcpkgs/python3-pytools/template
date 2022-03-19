@@ -1,7 +1,7 @@
 # Template file for 'python3-pytools'
 pkgname=python3-pytools
-version=2021.2.8
-revision=2
+version=2022.1.1
+revision=1
 wrksrc=${pkgname#*-}-${version}
 build_style=python3-module
 hostmakedepends="python3-setuptools"
@@ -12,7 +12,7 @@ maintainer="Andrew J. Hesford <ajh@sideband.org>"
 license="X11"
 homepage="https://pypi.org/project/pytools"
 distfiles="${PYPI_SITE}/p/pytools/pytools-${version}.tar.gz"
-checksum=e11adc4914d805ac2bd02656fc6c0ec57c29dd305bd4a44122ca4e651a4bba8b
+checksum=3eebcc11923bf36fc42a9102d6e417a94817efb1aeb24d3149686dd5e3ec54d4
 
 post_install() {
 	vlicense LICENSE
