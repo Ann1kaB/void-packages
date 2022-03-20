@@ -64,7 +64,7 @@ if [ ! -e ${XBPS_SRCPKGDIR}/${pkgname} ] || [ ! -e ${XBPS_SRCPKGDIR}/${headers_n
 	popd
 fi
 pkgdesc="Linux-tkg"
-revision=21
+revision=22
 archs="x86_64" # PKGBUILD declares x86_64 only
 python_version=3
 patch_args="-Np1"
