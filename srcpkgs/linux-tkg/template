@@ -33,7 +33,6 @@ fi
 
 source ${_files}/customization.cfg
 source ${_where}/linux-tkg-config/prepare
-source ${_where}/BIG_UGLY_FROGMINER
 
 if [ ! -e ${srcdir}/run_check ]; then
   _tkg_initscript
@@ -52,10 +51,18 @@ if [ ! -e ${srcdir}/run_check ]; then
   _compiler_opt=${_compileropt}
   echo "_compiler_opt=\"$_compileropt\"" >> "${srcdir}/compilerset"
 fi
+source ${_where}/BIG_UGLY_FROGMINER
 touch ${srcdir}/run_check
 source ${srcdir}/path
 # Template file for 'linux${_basever}-tkg-${_cpusched}${_compiler_name}'
 pkgname=linux${_basever}-tkg-${_cpusched}${_compiler_name}
+headers_name=linux${_basever}-tkg-headers-${_cpusched}${_compiler_name}
+if [ ! -e ${XBPS_SRCPKGDIR}/${pkgname} ] || [ ! -e ${XBPS_SRCPKGDIR}/${headers_name} ]; then
+	pushd ${XBPS_SRCPKGDIR}
+	ln -s linux-tkg ${pkgname}
+	ln -s linux-tkg ${headers_name}
+	popd
+fi
 pkgdesc="Linux-tkg"
 revision=21
 archs="x86_64" # PKGBUILD declares x86_64 only
@@ -75,15 +82,11 @@ if [[ "$_sub" = rc* ]]; then
   kernel_site="https://git.kernel.org/torvalds/t/linux-${_rc_kern_ver}.tar.gz"
 else
   version=${_basekernel}.${_sub}
-  if [ "$_sub" != "0" ]; then
-    _kern_ver=${_basekernel}.${_sub}
-    _kern_ver_path=${_basekernel}.${_sub}
-  else
-    _kern_ver=${_basekernel}
-    _kern_ver_path=${_basekernel}
-  fi
+  _kern_ver=${_basekernel}
+  _kern_ver_path=${_basekernel}
   _kern_ver_dir=${version}
-  kernel_site="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${_kern_ver}.tar.xz"
+  kernel_site="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${_basekernel}.tar.xz"
+  patch_site="https://cdn.kernel.org/pub/linux/kernel/v5.x/patch-${_basekernel}.${_sub}.xz"
 fi
 
 _kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
@@ -96,55 +99,72 @@ homepage="https://github.com/Frogging-Family/linux-tkg/tree/master"
 
 case $_basever in
         54)
+	stupid_num="1"
 	opt_ver="4.19-5.4"
 	cpu_opt_sum='27b7fc535ade94b636c3ec4e809e141831e9465a0ef55215a9852b87048629e2'
-	kernel_sum='21626132658dc34cb41b7aa7b80ecf83751890a71ac1a63d77aea9d488271a03'
         ;;
         57)
+	stupid_num="3"
         opt_ver="5.7+"
 	cpu_opt_sum='1f56a2466bd9b4477925682d8f944fabb38727140e246733214fe50aa326fc47'
-	kernel_sum='419c6248b9ae4dfead4599787aecbfd202e88bc4124523adfa6dd2d642b99fe7'
         ;;
         58)
+	stupid_num="5"
         opt_ver="5.8-5.14"
 	cpu_opt_sum='2f99d9e37f372925e054115bfead4723a328ffbdb7bf958753aab2ac48dc5673'
-	kernel_sum='4ab4a3f694b7b4cfbe78871eab34c8039ad33692144c45c669827a594da85534'
         ;;
         59)
+	stupid_num="7"
         opt_ver="5.8-5.14"
 	cpu_opt_sum='2f99d9e37f372925e054115bfead4723a328ffbdb7bf958753aab2ac48dc5673'
-	kernel_sum='b0d7abae88e5f91893627c645e680a95c818defd1b4fcaf3e2afb4b2b6b4ab86'
         ;;
         510)
+	stupid_num="9"
         opt_ver="5.8-5.14"
 	cpu_opt_sum='2f99d9e37f372925e054115bfead4723a328ffbdb7bf958753aab2ac48dc5673'
-	kernel_sum='158c6746c11a90645b4d40bdb5c049d9fac7e4c9ed381c9b7aa94db1a8e7e9ec'
        ;;
         511)
+	stupid_num="11"
         opt_ver="5.8-5.14"
 	cpu_opt_sum='2f99d9e37f372925e054115bfead4723a328ffbdb7bf958753aab2ac48dc5673'
-	kernel_sum='fa61193d24f2cdb1290158299f7041a7bc41090ec536af0d78a4d5ea029b6f7b'
        ;;
         512)
+	stupid_num="13"
         opt_ver="5.8-5.14"
 	cpu_opt_sum='2f99d9e37f372925e054115bfead4723a328ffbdb7bf958753aab2ac48dc5673'
-	kernel_sum='5acdd08104a3e1c332ef708a6b0c39f579d5e930ff4ab0e2e90bfcb886f39e31'
+       ;;
+        513)
+	stupid_num="15"
+	opt_ver="5.8-5.14"
+	cpu_opt_sum='2f99d9e37f372925e054115bfead4723a328ffbdb7bf958753aab2ac48dc5673'
        ;;
         514)
+	stupid_num="17"
         opt_ver="5.8-5.14"
 	cpu_opt_sum='2f99d9e37f372925e054115bfead4723a328ffbdb7bf958753aab2ac48dc5673'
-	kernel_sum='74f39a0c69e9d7c94d290515645396725e3ce3667b85baf4b3c3f6f303c7a406'
 	;;
         515)
-        opt_ver="5.15+"
-	cpu_opt_sum='14baea3bc9ffbe41737cfce6f0c5e6b536021571de7b5c7a9e39b31b94b23668'
-	kernel_sum='d2baa6a1aed59202f599fb69074d0adf5f2754b63e271a22465f29dd593bb774'
+	stupid_num="19"
+        opt_ver="5.15-5.16"
+	cpu_opt_sum='2893ca70c1812f98cbf1ea1ed0abac7b70c91b21f07c4f6c1816a769bcc34909'
+	;;
+	516)
+	stupid_num="21"
+	opt_ver="5.15-5.16"
+	cpu_opt_sum='2893ca70c1812f98cbf1ea1ed0abac7b70c91b21f07c4f6c1816a769bcc34909'
+	;;
+	517)
+	stupid_num="23"
+	opt_ver="5.17+"
+	cpu_opt_sum='dea86a521603414a8c7bf9cf1f41090d5d6f8035ce31407449e25964befb1e50'
+	;;
 esac
-
+kernel_sum=$( grep -i -A 1 'sha256sums=(' ${_where}/PKGBUILD | cut -d"'" -f2 | sed '/--/d;/#/d' | head -${stupid_num} | tail +${stupid_num})
+patch_sum=$( grep -i -A 1 'sha256sums=(' ${_where}/PKGBUILD | cut -d"'" -f2 | sed '/--/d;/#/d' | head -$((${stupid_num}+1)) | tail +$((${stupid_num}+1)))
 distfiles="${kernel_site}
-https://raw.githubusercontent.com/graysky2/kernel_compiler_patch/master/more-uarches-for-kernel-${opt_ver}.patch"
+${patch_site}"
 checksum="${kernel_sum}
-${cpu_opt_sum}"
+${patch_sum}"
 nostrip=yes
 noshlibprovides=yes
 preserve=yes
@@ -200,7 +220,7 @@ do_configure() {
   if [[ "$_sub" = rc* ]]; then
     cd ${wrksrc}/linux-${_rc_kern_ver}
   else
-    cd ${wrksrc}/linux-${_kern_ver}
+    cd ${wrksrc}/linux-${_basekernel}
   fi
   _tkg_srcprep
   
@@ -266,6 +286,14 @@ echo "
     _force_all_threads="-j$((`nproc`+1))"
   else
     _force_all_threads="${makejobs}"
+  fi
+
+  # ccache
+  if [ "$_noccache" != "true" ] && xbps-query -s ccache &> /dev/null; then
+    export PATH="/usr/lib/ccache/bin/:$PATH"
+    export CCACHE_SLOPPINESS="file_macro,locale,time_macros"
+    export CCACHE_NOHASHDIR="true"
+    msg2 'ccache was found and will be used'
   fi
 
   # build!
@@ -474,6 +502,510 @@ linux-tkg-dbg_package() {
 
 # because xbps-src doesn't allow variables in subpkg functions
 case $_basever-$_cpusched$_compiler_name in
+	517-cacule)
+	linux517-tkg-cacule_package() {
+		short_desc+=" - CaCULE CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux517-tkg-headers-cacule_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	517-upds)
+	linux517-tkg-upds_package() {
+		short_desc+=" - undead (TkG) PDS CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux517-tkg-headers-upds_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	517-pds)
+	linux517-tkg-pds_package() {
+		short_desc+=" - PDS CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux517-tkg-headers-pds_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	517-bmq)
+	linux517-tkg-bmq_package() {
+		short_desc+=" - BMQ CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux517-tkg-headers-bmq_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	517-cfs)
+	linux517-tkg-cfs_package() {
+		short_desc+=" - CFS CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux517-tkg-headers-cfs_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	517-MuQSS)
+	linux517-tkg-MuQSS_package() {
+		short_desc+=" - MuQSS CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux517-tkg-headers-MuQSS_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	517-cacule-llvm)
+	linux517-tkg-cacule-llvm_package() {
+		short_desc+=" - CaCULE CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux517-tkg-headers-cacule-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	517-upds-llvm)
+	linux517-tkg-upds-llvm_package() {
+		short_desc+=" - undead (TkG) PDS CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux517-tkg-headers-upds-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	517-pds-llvm)
+	linux517-tkg-pds-llvm_package() {
+		short_desc+=" - PDS CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux517-tkg-headers-pds-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	517-bmq-llvm)
+	linux517-tkg-bmq-llvm_package() {
+		short_desc+=" - BMQ CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux517-tkg-headers-bmq-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	517-cfs-llvm)
+	linux517-tkg-cfs-llvm_package() {
+		short_desc+=" - CFS CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux517-tkg-headers-cfs-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	517-MuQSS-llvm)
+	linux517-tkg-MuQSS-llvm_package() {
+		short_desc+=" - MuQSS CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux517-tkg-headers-MuQSS-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	516-cacule)
+	linux516-tkg-cacule_package() {
+		short_desc+=" - CaCULE CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux516-tkg-headers-cacule_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	516-upds)
+	linux516-tkg-upds_package() {
+		short_desc+=" - undead (TkG) PDS CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux516-tkg-headers-upds_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	516-pds)
+	linux516-tkg-pds_package() {
+		short_desc+=" - PDS CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux516-tkg-headers-pds_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	516-bmq)
+	linux516-tkg-bmq_package() {
+		short_desc+=" - BMQ CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux516-tkg-headers-bmq_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	516-cfs)
+	linux516-tkg-cfs_package() {
+		short_desc+=" - CFS CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux516-tkg-headers-cfs_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	516-MuQSS)
+	linux516-tkg-MuQSS_package() {
+		short_desc+=" - MuQSS CPU Scheduler compiled w/GCC"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux516-tkg-headers-MuQSS_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	516-cacule-llvm)
+	linux516-tkg-cacule-llvm_package() {
+		short_desc+=" - CaCULE CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux516-tkg-headers-cacule-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	516-upds-llvm)
+	linux516-tkg-upds-llvm_package() {
+		short_desc+=" - undead (TkG) PDS CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux516-tkg-headers-upds-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	516-pds-llvm)
+	linux516-tkg-pds-llvm_package() {
+		short_desc+=" - PDS CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux516-tkg-headers-pds-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	516-bmq-llvm)
+	linux516-tkg-bmq-llvm_package() {
+		short_desc+=" - BMQ CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux516-tkg-headers-bmq-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	516-cfs-llvm)
+	linux516-tkg-cfs-llvm_package() {
+		short_desc+=" - CFS CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux516-tkg-headers-cfs-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
+	516-MuQSS-llvm)
+	linux516-tkg-MuQSS-llvm_package() {
+		short_desc+=" - MuQSS CPU Scheduler compiled w/LLVM"
+		nostrip=yes
+		noshlibprovides=yes
+		preserve=yes
+		triggers="kernel-hooks"
+		_kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+		kernel_hooks_version="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
+	}
+	linux516-tkg-headers-MuQSS-llvm_package() {
+  		short_desc+=" - Headers and scripts for building modules for the $pkgdesc kernel"
+  		nostrip=yes
+  		preserve=yes
+  		noshlibprovides=yes
+  		pkg_install() {
+        		vmove /usr/src
+        		vmove /usr/lib/modules/${_kernver}/build
+  		}
+	}
+	;;
 	515-cacule)
 	linux515-tkg-cacule_package() {
 		short_desc+=" - CaCULE CPU Scheduler compiled w/GCC"
