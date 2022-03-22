@@ -36,11 +36,6 @@ source ${_where}/linux-tkg-config/prepare
 
 if [ ! -e ${srcdir}/run_check ]; then
   _tkg_initscript
-  if [[ "$_sub" = rc* ]]; then
-    echo "_srcpath=\"linux-${_basekernel}-${_sub}\"" >> ${srcdir}/path
-  else
-    echo "_srcpath=\"linux-${_basekernel}.${_sub}\"" >> ${srcdir}/path
-  fi
   for _f in ${_files}/mypatches/*.mypatch; do
 	[ ! -d ${_userpatch_dir} ] && mkdir ${_userpatch_dir}
 	if [ -e "${_f}" ]; then
@@ -48,12 +43,10 @@ if [ ! -e ${srcdir}/run_check ]; then
 	  break
         fi
   done
-  _compiler_opt=${_compileropt}
-  echo "_compiler_opt=\"$_compileropt\"" >> "${srcdir}/compilerset"
 fi
 source ${_where}/BIG_UGLY_FROGMINER
 touch ${srcdir}/run_check
-source ${srcdir}/path
+#source ${srcdir}/path
 # Template file for 'linux${_basever}-tkg-${_cpusched}${_compiler_name}'
 pkgname=linux${_basever}-tkg-${_cpusched}${_compiler_name}
 headers_name=linux${_basever}-tkg-headers-${_cpusched}${_compiler_name}
@@ -86,7 +79,9 @@ else
   _kern_ver_path=${_basekernel}
   _kern_ver_dir=${version}
   kernel_site="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${_basekernel}.tar.xz"
-  patch_site="https://cdn.kernel.org/pub/linux/kernel/v5.x/patch-${_basekernel}.${_sub}.xz"
+  if [ "$_sub" != 0 ]; then
+    patch_site="https://cdn.kernel.org/pub/linux/kernel/v5.x/patch-${_basekernel}.${_sub}.xz"
+  fi
 fi
 
 _kernver="${_kern_ver_dir}-tkg-${_cpusched}${_compiler_name}_${revision}"
